@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Hồ Sơ Tuyển Sinh</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --accent: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #93c5fd;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 10px 16px;
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HỆ THỐNG QUẢN LÝ HỒ SƠ TUYỂN SINH & HỌC SINH THPT</h1>
+            <p>Dự án Quản lý hồ sơ học sinh - Cập nhật dữ liệu & phân quyền tự động</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Thêm Hồ Sơ Học Sinh</h2>
+                <form id="studentForm">
+                    <div class="form-group">
+                        <label>Mã Học Sinh / SBD</label>
+                        <input type="text" id="studentId" placeholder="VD: HS1001" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Họ và Tên</label>
+                        <input type="text" id="fullName" placeholder="VD: Nguyễn Văn A" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày Sinh</label>
+                        <input type="date" id="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Khối / Lớp</label>
+                        <select id="gradeClass">
+                            <option value="10A1">10A1</option>
+                            <option value="10A2">10A2</option>
+                            <option value="11A1">11A1</option>
+                            <option value="12A1">12A1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Điểm Tuyển Sinh / Trung Bình</label>
+                        <input type="number" step="0.1" id="score" placeholder="VD: 25.5">
+                    </div>
+                    <button type="submit" class="btn">Lưu Hồ Sơ</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Danh Sách Hồ Sơ</h2>
+                <div class="toolbar">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm theo tên hoặc mã HS...">
+                    <select id="filterGrade" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border);">
+                        <option value="ALL">Tất cả lớp</option>
+                        <option value="10A1">10A1</option>
+                        <option value="10A2">10A2</option>
+                        <option value="11A1">11A1</option>
+                        <option value="12A1">12A1</option>
+                    </select>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table id="studentTable">
+                        <thead>
+                            <tr>
+                                <th>Mã HS</th>
+                                <th>Họ và Tên</th>
+                                <th>Lớp</th>
+                                <th>Điểm</th>
+                                <th>Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <!-- Dữ liệu mẫu -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
