@@ -70,9 +70,10 @@
           </div>
           <div>
             <label class="block font-semibold text-slate-800 mb-1">
-              Số CCCD (*) <span class="text-[11px] font-normal text-amber-700">(12 số) </span>
+              Số CCCD (*) <span class="text-[11px] font-normal text-amber-700">(12 số)</span>
             </label>
-            <input type="text" id="vCCCD" required placeholder="040112345678" maxlength="10" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
+            <!-- Đã sửa maxlength thành 12 -->
+            <input type="text" id="vCCCD" required placeholder="040112345678" maxlength="12" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
           </div>
         </div>
 
@@ -160,159 +161,180 @@
 
   <script>
     // 🔗 ĐIỀN URL WEB APP GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY:
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec";
+  
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec";
 
-    let currentStudent = null;
+let currentStudent = null;
 
-    // Tự động định dạng gõ Ngày sinh dd/mm/yyyy
-    document.getElementById('vDob').addEventListener('input', function(e) {
-      let v = this.value.replace(/\D/g, '').slice(0, 8);
-      if (v.length > 4) {
-        this.value = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
-      } else if (v.length > 2) {
-        this.value = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
-      } else {
-        this.value = v;
-      }
-    });
+// Tự động định dạng gõ Ngày sinh dd/mm/yyyy
+document.getElementById('vDob').addEventListener('input', function(e) {
+  let v = this.value.replace(/\D/g, '').slice(0, 8);
+  if (v.length > 4) {
+    this.value = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+  } else if (v.length > 2) {
+    this.value = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+  } else {
+    this.value = v;
+  }
+});
 
-    // Hàm xác nhận thông tin ở Bước 1
-    function verifyHocSinh() {
-      const sbd = document.getElementById('vSbd').value.trim();
-      const dob = document.getElementById('vDob').value.trim();
-      const CCCD = document.getElementById('vCCCD').value.trim();
-      const btn = document.getElementById('btnVerify');
-      const msg = document.getElementById('verifyMsg');
+// Tự động chỉ cho gõ số ở ô CCCD
+document.getElementById('vCCCD').addEventListener('input', function(e) {
+  this.value = this.value.replace(/\D/g, '').slice(0, 12);
+});
 
-      if (!sbd || !dob) { 
-        showMsg(msg, 'rose', '⚠️ Vui lòng điền đầy đủ Số Báo Danh và Ngày Sinh!');
-        return; 
-      }
+// 1. Hàm xác nhận thông tin học sinh
+function verifyHocSinh() {
+  const sbd = document.getElementById('vSbd').value.trim();
+  const dob = document.getElementById('vDob').value.trim();
+  const cccd = document.getElementById('vCCCD').value.trim();
+  const btn = document.getElementById('btnVerify');
+  const msg = document.getElementById('verifyMsg');
 
-      const regexDob = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/\d{4}$/;
-      if (!regexDob.test(dob)) {
-        showMsg(msg, 'rose', '⚠️ Vui lòng nhập Ngày sinh đúng định dạng dd/mm/yyyy (Ví dụ: 15/08/2009)!');
-        return;
-      }
+  // Kiểm tra rỗng
+  if (!sbd || !dob || !cccd) { 
+    showMsg(msg, 'rose', '⚠️ Vui lòng điền đầy đủ Số Báo Danh, Ngày Sinh và Số CCCD!');
+    return; 
+  }
 
-      btn.disabled = true;
-      btn.innerText = '⏳ Đang kiểm tra dữ liệu...';
-      msg.classList.add('hidden');
+  // Kiểm tra định dạng ngày sinh
+  const regexDob = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/\d{4}$/;
+  if (!regexDob.test(dob)) {
+    showMsg(msg, 'rose', '⚠️ Vui lòng nhập Ngày sinh đúng định dạng dd/mm/yyyy (Ví dụ: 15/08/2009)!');
+    return;
+  }
 
-      fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: "checkHocSinhNhapHoc", sbd: sbd, dob: dob })
-      })
-      .then(res => res.json())
-      .then(res => {
-        btn.disabled = false;
-        btn.innerText = 'XÁC NHẬN THÔNG TIN';
+  // Kiểm tra đủ 12 số CCCD
+  if (cccd.length !== 12) {
+    showMsg(msg, 'rose', '⚠️ Số CCCD/Mã định danh phải bao gồm đúng 12 chữ số!');
+    return;
+  }
 
-        if (res.status === 'success' || res.success) {
-          currentStudent = res.data || res;
-          
-          document.getElementById('stepVerify').classList.add('hidden');
-          document.getElementById('formToHap').classList.remove('hidden');
+  btn.disabled = true;
+  btn.innerText = '⏳ Đang kiểm tra dữ liệu...';
+  msg.classList.add('hidden');
 
-          document.getElementById('lblFullName').innerText = currentStudent.fullName || "";
-          document.getElementById('lblSbd').innerText = currentStudent.sbd || sbd;
-          document.getElementById('lblSchool').innerText = currentStudent.schoolTHCS || "--";
+  fetch(GAS_WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    // Gửi đầy đủ sbd, dob, cccd và đúng action
+    body: JSON.stringify({ 
+      action: "checkHocSinhToHap", 
+      sbd: sbd, 
+      dob: dob,
+      cccd: cccd 
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
+    btn.disabled = false;
+    btn.innerText = 'XÁC NHẬN THÔNG TIN';
 
-          // Nếu học sinh đã chọn trước đó, điền lại lựa chọn
-          if (currentStudent.nv1) document.getElementById('nv1').value = currentStudent.nv1;
-          if (currentStudent.nv2) document.getElementById('nv2').value = currentStudent.nv2;
-          if (currentStudent.nv3) document.getElementById('nv3').value = currentStudent.nv3;
-
-        } else {
-          showMsg(msg, 'rose', res.message || "Không tìm thấy thông tin học sinh!");
-        }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        btn.innerText = 'XÁC NHẬN THÔNG TIN';
-        showMsg(msg, 'rose', "❌ Lỗi kết nối: " + err.message);
-      });
-    }
-
-    // Kiểm tra trùng lặp real-time khi học sinh chọn nguyện vọng
-    function validateSelections() {
-      const nv1 = document.getElementById('nv1').value;
-      const nv2 = document.getElementById('nv2').value;
-      const nv3 = document.getElementById('nv3').value;
-      const msg = document.getElementById('submitMsg');
-
-      if ((nv1 && nv2 && nv1 === nv2) || (nv1 && nv3 && nv1 === nv3) || (nv2 && nv3 && nv2 === nv3)) {
-        showMsg(msg, 'rose', '⚠️ Các nguyện vọng không được trùng nhau! Vui lòng chọn các tổ hợp khác nhau.');
-        return false;
-      } else {
-        msg.classList.add('hidden');
-        return true;
-      }
-    }
-
-    // Hàm xử lý gửi nguyện vọng tổ hợp ở Bước 2
-    function handleToHapSubmit(e) {
-      e.preventDefault();
+    if (res.status === 'success' || res.success) {
+      currentStudent = res.data || res;
       
-      if (!validateSelections()) return;
+      document.getElementById('stepVerify').classList.add('hidden');
+      document.getElementById('formToHap').classList.remove('hidden');
 
-      const nv1 = document.getElementById('nv1').value;
-      const nv2 = document.getElementById('nv2').value;
-      const nv3 = document.getElementById('nv3').value;
-      const btn = document.getElementById('btnSubmitToHap');
-      const msg = document.getElementById('submitMsg');
+      document.getElementById('lblFullName').innerText = currentStudent.fullName || "";
+      document.getElementById('lblSbd').innerText = currentStudent.sbd || sbd;
+      document.getElementById('lblSchool').innerText = currentStudent.schoolTHCS || "--";
 
-      btn.disabled = true;
-      btn.innerText = '⏳ Đang gửi đăng ký...';
-      msg.classList.add('hidden');
+      // Nếu học sinh đã đăng ký trước đó, điền lại nguyện vọng cũ
+      if (currentStudent.nv1) document.getElementById('nv1').value = currentStudent.nv1;
+      if (currentStudent.nv2) document.getElementById('nv2').value = currentStudent.nv2;
+      if (currentStudent.nv3) document.getElementById('nv3').value = currentStudent.nv3;
 
-      const payload = {
-        action: "submitDangKyToHap",
-        sbd: currentStudent.sbd,
-        fullName: currentStudent.fullName,
-        dob: currentStudent.dob,
-        CCCD:currentStudent.CCCD,
-        nv1: nv1,
-        nv2: nv2,
-        nv3: nv3
-      };
-
-      fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(res => {
-        btn.disabled = false;
-        btn.innerText = 'GỬI ĐĂNG KÝ TỔ HỢP';
-
-        if (res.status === 'success' || res.success) {
-          showMsg(msg, 'emerald', "✅ " + (res.message || "Đăng ký tổ hợp môn thành công!"));
-        } else {
-          showMsg(msg, 'rose', "⚠️ " + (res.message || "Có lỗi xảy ra, vui lòng thử lại!"));
-        }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        btn.innerText = 'GỬI ĐĂNG KÝ TỔ HỢP';
-        showMsg(msg, 'rose', "❌ Lỗi kết nối: " + err.message);
-      });
+    } else {
+      showMsg(msg, 'rose', res.message || "Không tìm thấy thông tin học sinh!");
     }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btn.innerText = 'XÁC NHẬN THÔNG TIN';
+    showMsg(msg, 'rose', "❌ Lỗi kết nối: " + err.message);
+  });
+}
 
-    function resetFormStep() {
-      document.getElementById('formToHap').classList.add('hidden');
-      document.getElementById('stepVerify').classList.remove('hidden');
-      document.getElementById('verifyMsg').classList.add('hidden');
-      document.getElementById('vSbd').value = '';
-    }
+// 2. Kiểm tra trùng lặp real-time khi chọn nguyện vọng
+function validateSelections() {
+  const nv1 = document.getElementById('nv1').value;
+  const nv2 = document.getElementById('nv2').value;
+  const nv3 = document.getElementById('nv3').value;
+  const msg = document.getElementById('submitMsg');
 
-    function showMsg(el, type, text) {
-      el.className = `p-3.5 bg-${type}-50 text-${type}-800 border border-${type}-200 rounded-xl text-xs font-semibold leading-relaxed`;
-      el.innerText = text;
-      el.classList.remove('hidden');
+  if ((nv1 && nv2 && nv1 === nv2) || (nv1 && nv3 && nv1 === nv3) || (nv2 && nv3 && nv2 === nv3)) {
+    showMsg(msg, 'rose', '⚠️ Các nguyện vọng không được trùng nhau! Vui lòng chọn các tổ hợp khác nhau.');
+    return false;
+  } else {
+    msg.classList.add('hidden');
+    return true;
+  }
+}
+
+// 3. Hàm gửi Đăng ký Tổ hợp
+function handleToHapSubmit(e) {
+  e.preventDefault();
+  
+  if (!validateSelections()) return;
+
+  const nv1 = document.getElementById('nv1').value;
+  const nv2 = document.getElementById('nv2').value;
+  const nv3 = document.getElementById('nv3').value;
+  const btn = document.getElementById('btnSubmitToHap');
+  const msg = document.getElementById('submitMsg');
+
+  btn.disabled = true;
+  btn.innerText = '⏳ Đang gửi đăng ký...';
+  msg.classList.add('hidden');
+
+  const payload = {
+    action: "submitDangKyToHap",
+    sbd: currentStudent.sbd,
+    fullName: currentStudent.fullName,
+    dob: currentStudent.dob,
+    cccd: currentStudent.cccd || document.getElementById('vCCCD').value.trim(),
+    nv1: nv1,
+    nv2: nv2,
+    nv3: nv3
+  };
+
+  fetch(GAS_WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(res => {
+    btn.disabled = false;
+    btn.innerText = 'GỬI ĐĂNG KÝ TỔ HỢP';
+
+    if (res.status === 'success' || res.success) {
+      showMsg(msg, 'emerald', "✅ " + (res.message || "Đăng ký tổ hợp môn thành công!"));
+    } else {
+      showMsg(msg, 'rose', "⚠️ " + (res.message || "Có lỗi xảy ra, vui lòng thử lại!"));
     }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btn.innerText = 'GỬI ĐĂNG KÝ TỔ HỢP';
+    showMsg(msg, 'rose', "❌ Lỗi kết nối: " + err.message);
+  });
+}
+
+function resetFormStep() {
+  document.getElementById('formToHap').classList.add('hidden');
+  document.getElementById('stepVerify').classList.remove('hidden');
+  document.getElementById('verifyMsg').classList.add('hidden');
+  document.getElementById('vSbd').value = '';
+  document.getElementById('vCCCD').value = '';
+}
+
+function showMsg(el, type, text) {
+  el.className = `p-3.5 bg-${type}-50 text-${type}-800 border border-${type}-200 rounded-xl text-xs font-semibold leading-relaxed`;
+  el.innerText = text;
+  el.classList.remove('hidden');
+}
   </script>
 </body>
 </html>
