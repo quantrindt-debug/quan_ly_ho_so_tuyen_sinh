@@ -54,7 +54,7 @@
       <!-- BƯỚC 1: TRA CỨU XÁC THỰC HỌC SINH -->
       <div id="stepVerify" class="space-y-4">
         <p class="text-xs text-amber-900 bg-amber-50/80 p-3.5 rounded-xl border border-amber-200/80 leading-relaxed">
-          📌 Học sinh nhập chính xác <strong>Số Báo Danh</strong> và <strong>Ngày Sinh</strong> đã trúng tuyển để tiến hành lựa chọn tổ hợp môn học.
+          📌 Học sinh nhập chính xác <strong>Số Báo Danh</strong>, <strong>Ngày Sinh</strong> và <strong>số CCCD</strong> đã trúng tuyển để tiến hành lựa chọn tổ hợp môn học.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -67,6 +67,12 @@
               Ngày Sinh (*) <span class="text-[11px] font-normal text-amber-700">(dd/mm/yyyy)</span>
             </label>
             <input type="text" id="vDob" required placeholder="15/08/2011" maxlength="10" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-800 mb-1">
+              Số CCCD (*) <span class="text-[11px] font-normal text-amber-700">(12 số) </span>
+            </label>
+            <input type="text" id="vCCCD" required placeholder="040112345678" maxlength="10" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
           </div>
         </div>
 
@@ -174,6 +180,7 @@
     function verifyHocSinh() {
       const sbd = document.getElementById('vSbd').value.trim();
       const dob = document.getElementById('vDob').value.trim();
+      const CCCD = document.getElementById('vCCCD').value.trim();
       const btn = document.getElementById('btnVerify');
       const msg = document.getElementById('verifyMsg');
 
@@ -265,6 +272,7 @@
         sbd: currentStudent.sbd,
         fullName: currentStudent.fullName,
         dob: currentStudent.dob,
+        CCCD:currentStudent.CCCD,
         nv1: nv1,
         nv2: nv2,
         nv3: nv3
