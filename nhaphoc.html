@@ -44,7 +44,6 @@
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
         <span>Xác Nhận Nhập Học Trực Tuyến</span>
       </div>
-      <!-- Sửa lại đường dẫn trang chủ cho GitHub Pages -->
       <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline flex items-center gap-1 transition">
         🏠 Trang chủ
       </a>
@@ -141,7 +140,7 @@
   </footer>
 
   <script>
-    // 🔗 ĐIỀN URL WEB APP GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY:
+    // 🔗 URL WEB APP GOOGLE APPS SCRIPT CỦA BẠN:
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
 
     // Tự động chèn dấu / khi nhập ngày sinh
@@ -161,6 +160,7 @@
       this.value = this.value.replace(/\D/g, '').slice(0, 12);
     });
 
+    // Hàm xử lý gửi form
     function handleFormSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSubmit');
@@ -177,7 +177,7 @@
         return;
       }
 
-      // 2. Kiểm tra bắt buộc chọn file đính kèm
+      // 2. Kiểm tra file đính kèm
       if (!fileInput.files || fileInput.files.length === 0) {
         msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
         msg.innerText = "⚠️ Vui lòng tải lên Ảnh CCCD hoặc Giấy khai sinh đính kèm!";
@@ -189,29 +189,29 @@
       btn.innerText = '⏳ Đang kiểm tra & gửi dữ liệu...';
       msg.classList.add('hidden');
 
-      const payload = {
-        action: "submitNhapHoc",
-        sbd: document.getElementById('sbd').value.trim(),
-        fullName: document.getElementById('fullName').value.trim(),
-        cccd: document.getElementById('cccd').value.trim(),
-        dob: dob,
-        schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        fileData: null
-      };
-
-      // Đọc file đính kèm và gửi
       const file = fileInput.files[0];
       const reader = new FileReader();
+
       reader.onload = function(evt) {
-        payload.fileData = {
-          data: evt.target.result.split(',')[1],
-          mimeType: file.type,
-          name: file.name
+        const payload = {
+          action: "submitNhapHoc",
+          sbd: document.getElementById('sbd').value.trim(),
+          fullName: document.getElementById('fullName').value.trim(),
+          cccd: document.getElementById('cccd').value.trim(),
+          dob: dob,
+          schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          address: document.getElementById('address').value.trim(),
+          fileData: {
+            base64: evt.target.result.split(',')[1],
+            mimeType: file.type,
+            fileName: file.name
+          }
         };
+
         sendData(payload);
       };
+
       reader.readAsDataURL(file);
     }
 
