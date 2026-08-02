@@ -3,676 +3,236 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản Trị Tuyển Sinh - THPT Nguyễn Duy Trinh</title>
+  <title>Trang Quản Trị Nhập Học - THPT Nguyễn Duy Trinh</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Thư viện Xuất Excel -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
     .loader {
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #1e3a8a;
+      border: 3px solid #f3f3f3;
       border-radius: 50%;
-      width: 16px;
-      height: 16px;
+      border-top: 3px solid #1e3a8a;
+      width: 24px;
+      height: 24px;
       animation: spin 1s linear infinite;
-      display: inline-block;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
+<body class="bg-slate-100 min-h-screen text-slate-800">
 
-  <!-- MODAL ĐĂNG NHẬP ADMIN -->
-  <div id="authModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 text-center">
-      <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
-        🔒
+  <!-- Header Admin -->
+  <header class="bg-blue-950 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div>
+        <h1 class="font-bold text-lg md:text-xl text-amber-300">⚙️ HỆ THỐNG QUẢN TRỊ NHẬP HỌC LỚP 10</h1>
+        <p class="text-xs text-blue-200">Trường THPT Nguyễn Duy Trinh - Năm học 2026-2027</p>
       </div>
-      <h3 class="text-lg font-extrabold text-slate-800 uppercase mb-1">Xác thực Quyền Quản trị</h3>
-      <p class="text-xs text-slate-500 mb-6">Vui lòng nhập mật khẩu cán bộ để truy cập hệ thống</p>
-      
-      <form onsubmit="checkAdminPassword(event)" class="space-y-4">
-        <div>
-          <input type="password" 
-                 id="adminPasswordInput" 
-                 placeholder="Nhập mật khẩu..." 
-                 required
-                 class="w-full px-4 py-3 text-sm font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition text-center tracking-widest" />
-          <p id="authErrorMsg" class="text-xs text-rose-600 font-bold mt-2 hidden">⚠️ Mật khẩu không chính xác!</p>
-        </div>
-
-        <button type="submit" 
-                class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg transition active:scale-95">
-          Đăng nhập Hệ thống
+      <div class="flex items-center gap-3">
+        <button onclick="loadAdminData()" class="bg-blue-800 hover:bg-blue-700 text-xs text-white font-semibold py-2 px-3 rounded-lg border border-blue-600 transition flex items-center gap-1">
+          🔄 Tải lại dữ liệu
         </button>
-      </form>
+        <a href="./index.html" class="bg-slate-700 hover:bg-slate-600 text-xs text-white font-semibold py-2 px-3 rounded-lg transition">
+          🏠 Trang chủ
+        </a>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <div>
-    <!-- Navigation Bar -->
-    <header class="bg-blue-950 text-white py-4 px-6 shadow-md flex justify-between items-center print:hidden">
-      <div class="flex items-center space-x-3">
-        <span class="text-2xl">🔐</span>
+  <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- Thẻ Thống kê (Dashboard Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Tổng số -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
         <div>
-          <h1 class="font-bold text-lg leading-tight">HỆ THỐNG QUẢN TRỊ TUYỂN SINH</h1>
-          <p class="text-xs text-blue-200">Trường THPT Nguyễn Duy Trinh</p>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Tổng Trúng Tuyển</p>
+          <h3 id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">--</h3>
         </div>
-      </div>
-      <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline flex items-center gap-1 transition">
-        🏠 Trang chủ
-      </a>
-    </header>
-
-    <main class="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-
-      <!-- 1. BẢNG THỐNG KÊ TỔNG QUAN -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 print:hidden">
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-          <div>
-            <p class="text-xs font-bold text-slate-400 uppercase">Học sinh Trúng tuyển</p>
-            <h3 id="statTotal" class="text-2xl font-extrabold text-blue-950 mt-1">--</h3>
-          </div>
-          <div class="w-12 h-12 bg-blue-50 text-blue-800 rounded-xl flex items-center justify-center text-xl font-bold">🎓</div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-          <div>
-            <p class="text-xs font-bold text-slate-400 uppercase">Đã Đăng ký Nhập học</p>
-            <h3 id="statDaDangKy" class="text-2xl font-extrabold text-emerald-600 mt-1">--</h3>
-          </div>
-          <div class="w-12 h-12 bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center text-xl font-bold">✅</div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-          <div>
-            <p class="text-xs font-bold text-slate-400 uppercase">Chưa Đăng ký</p>
-            <h3 id="statChuaDangKy" class="text-2xl font-extrabold text-rose-600 mt-1">--</h3>
-          </div>
-          <div class="w-12 h-12 bg-rose-50 text-rose-700 rounded-xl flex items-center justify-center text-xl font-bold">⏳</div>
-        </div>
+        <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-xl">🎓</div>
       </div>
 
-      <!-- 2. ĐIỀU KHIỂN KHÓA / MỞ KHÓA -->
-      <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 space-y-4 print:hidden">
-        <h2 class="text-base font-bold text-slate-800 border-b pb-3 flex items-center gap-2">
-          <span>⚙️</span> Quản Lý Trạng Thái Cổng Đăng Ký
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Khóa Nhập Học -->
-          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex items-center justify-between">
-            <div>
-              <h3 class="font-bold text-sm text-slate-800">1. Cổng Đăng Ký Nhập Học</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Ghi nhãn <code class="bg-slate-200 px-1 rounded text-slate-700">TRUE/FALSE</code> (DS_TRUNG_TUYEN)</p>
-              <span id="statusLockNH" class="inline-block mt-2 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700">Đang kiểm tra...</span>
-            </div>
-            <button id="btnLockNH" onclick="toggleLock('NH')" class="px-4 py-2 text-xs font-bold rounded-xl text-white bg-blue-900 hover:bg-blue-800 transition shadow">
-              THAY ĐỔI
-            </button>
-          </div>
-
-          <!-- Khóa Tổ Hợp -->
-          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex items-center justify-between">
-            <div>
-              <h3 class="font-bold text-sm text-slate-800">2. Cổng Đăng Ký Tổ Hợp Môn</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Ghi nhãn <code class="bg-slate-200 px-1 rounded text-slate-700">TRUE/FALSE</code> (DanhSachNhapHoc)</p>
-              <span id="statusLockTH" class="inline-block mt-2 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700">Đang kiểm tra...</span>
-            </div>
-            <button id="btnLockTH" onclick="toggleLock('TH')" class="px-4 py-2 text-xs font-bold rounded-xl text-white bg-amber-600 hover:bg-amber-500 transition shadow">
-              THAY ĐỔI
-            </button>
-          </div>
+      <!-- Đã xác nhận -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Đã Xác Nhận</p>
+          <h3 id="statConfirmed" class="text-2xl font-bold text-emerald-600 mt-1">--</h3>
         </div>
+        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl text-xl">✅</div>
       </div>
 
-      <!-- 3. XUẤT BÁO CÁO & XEM DANH SÁCH -->
-      <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 space-y-4">
+      <!-- Chưa xác nhận -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Chưa Xác Nhận</p>
+          <h3 id="statPending" class="text-2xl font-bold text-amber-600 mt-1">--</h3>
+        </div>
+        <div class="p-3 bg-amber-50 text-amber-600 rounded-xl text-xl">⏳</div>
+      </div>
+
+      <!-- Tỷ lệ -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Tỷ Lệ Nhập Học</p>
+          <h3 id="statRate" class="text-2xl font-bold text-indigo-600 mt-1">--%</h3>
+        </div>
+        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl text-xl">📊</div>
+      </div>
+    </div>
+
+    <!-- Thanh Báo Lọc & Tìm kiếm -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 justify-between items-center">
+      <div class="flex flex-1 gap-3 w-full md:w-auto">
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 Tìm theo SBD, Họ tên, Trường THCS..."
+               class="w-full md:w-80 px-3.5 py-2 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600">
         
-        <!-- TAB CHỌN LOẠI BÁO CÁO -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b pb-3 print:hidden">
-          <div class="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl overflow-x-auto">
-            <button id="tabNhapHoc" onclick="switchTab('NHAPHOC')" class="px-4 py-2 text-xs font-bold rounded-lg transition bg-white text-blue-900 shadow whitespace-nowrap">
-              📝 Danh sách Nhập Học
-            </button>
-            <button id="tabToHop" onclick="switchTab('TOHOP')" class="px-4 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900 whitespace-nowrap">
-              📚 Danh sách Đăng Ký Tổ Hợp
-            </button>
-            <button id="tabDetail" onclick="switchTab('DETAIL')" class="px-4 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900 whitespace-nowrap">
-              📋 Hồ sơ Nhập học Chi tiết
-            </button>
-          </div>
-          
-          <!-- Bộ lọc báo cáo -->
-          <div id="filterContainer" class="flex items-center gap-2">
-            <select id="filterType" onchange="loadActiveReport()" class="px-3 py-2 border border-slate-300 rounded-xl text-xs font-semibold bg-white outline-none focus:ring-2 focus:ring-blue-600">
-              <option value="ALL">Tất cả danh sách</option>
-              <option value="REGISTERED">Đã thực hiện đăng ký</option>
-              <option value="UNREGISTERED">Chưa thực hiện đăng ký</option>
-            </select>
-            <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1 transition shadow">
-              <span>📥</span> Excel
-            </button>
-            <button onclick="exportToPDF()" class="bg-rose-700 hover:bg-rose-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1 transition shadow">
-              <span>🖨️</span> In / PDF
-            </button>
-          </div>
-        </div>
-
-        <!-- Tiêu đề In ấn -->
-        <div class="hidden print:block text-center border-b pb-4 mb-4">
-          <h3 class="font-bold text-sm uppercase">SỞ GIÁO DỤC VÀ ĐÀO TẠO NGHỆ AN</h3>
-          <h2 class="font-bold text-base uppercase">TRƯỜNG THPT NGUYỄN DUY TRINH</h2>
-          <h1 id="printTitle" class="font-extrabold text-lg mt-2 uppercase">DANH SÁCH BÁO CÁO TUYỂN SINH LỚP 10</h1>
-        </div>
-
-        <!-- BẢNG HỌC SINH NHẬP HỌC -->
-        <div id="viewNhapHoc" class="overflow-x-auto rounded-xl border border-slate-200">
-          <table class="w-full text-xs text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-100 text-slate-600 uppercase text-[11px] font-bold border-b border-slate-200">
-                <th class="p-3 text-center w-12">STT</th>
-                <th class="p-3 w-28">SBD</th>
-                <th class="p-3">Họ và Tên</th>
-                <th class="p-3 w-28">Ngày Sinh</th>
-                <th class="p-3">Trường THCS</th>
-                <th class="p-3 text-center w-20">Tổng điểm</th>
-                <th class="p-3 text-center w-20">NV</th>
-                <th class="p-3 w-64">Ghi chú</th> 
-                <th class="p-3 text-center w-32">Trạng Thái</th>
-              </tr>
-            </thead>
-            <tbody id="tableNhapHocBody" class="divide-y divide-slate-100 bg-white">
-              <tr>
-                <td colspan="9" class="p-4 text-center text-slate-400">
-                  <span class="loader"></span> Đang tải...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- BẢNG HỌC SINH ĐĂNG KÝ TỔ HỢP MÔN -->
-        <div id="viewToHop" class="overflow-x-auto rounded-xl border border-slate-200 hidden">
-          <table class="w-full text-xs text-left">
-            <thead class="bg-amber-50 text-amber-900 font-bold border-b border-amber-200">
-              <tr>
-                <th class="p-3 text-center">STT</th>
-                <th class="p-3">SBD</th>
-                <th class="p-3">Họ và Tên</th>
-                <th class="p-3">Ngày Sinh</th>
-                <th class="p-3">Số Điện Thoại</th>
-                <th class="p-3">Nguyện Vọng 1</th>
-                <th class="p-3">Nguyện Vọng 2</th>
-                <th class="p-3 text-center">Trạng Thái</th>
-              </tr>
-            </thead>
-            <tbody id="tableToHopBody" class="divide-y divide-slate-100 bg-white">
-              <tr><td colspan="8" class="p-4 text-center text-slate-400"><span class="loader"></span> Đang tải...</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- BẢNG HỒ SƠ NHẬP HỌC CHI TIẾT + TỆP MINH CHỨNG -->
-        <div id="viewDetail" class="overflow-x-auto rounded-xl border border-slate-200 hidden">
-          <table class="w-full text-xs text-left">
-            <thead class="bg-indigo-50 text-indigo-900 font-bold border-b border-indigo-200">
-              <tr>
-                <th class="p-3 text-center">STT</th>
-                <th class="p-3">SBD</th>
-                <th class="p-3">Họ và Tên</th>
-                <th class="p-3">Ngày Sinh</th>
-                <th class="p-3">Số Điện Thoại</th>
-                <th class="p-3">Trường THCS</th>
-                <th class="p-3 text-center">Tổng Điểm</th>
-                <th class="p-3 text-center">Hồ Sơ / Minh Chứng</th>
-              </tr>
-            </thead>
-            <tbody id="tableDetailBody" class="divide-y divide-slate-100 bg-white">
-              <tr><td colspan="8" class="p-4 text-center text-slate-400"><span class="loader"></span> Đang tải...</td></tr>
-            </tbody>
-          </table>
-        </div>
-
+        <select id="filterStatus" onchange="filterTable()" class="px-3.5 py-2 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="ALL">Tất cả trạng thái</option>
+          <option value="Đã đăng ký">Đã xác nhận</option>
+          <option value="Chưa đăng ký">Chưa xác nhận</option>
+        </select>
       </div>
 
-    </main>
-  </div>
-
-  <!-- FOOTER CÓ BIỂU TƯỢNG BẢN QUYỀN -->
-  <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50 space-y-1 print:hidden mt-6">
-    <p class="font-bold text-slate-700">Trường THPT Nguyễn Duy Trinh - Nghi Lộc, Nghệ An</p>
-    <p>© Bản quyền thuộc về Lê Duy Hải - Trường THPT Nguyễn Duy Trinh</p>
-  </footer>
-
-  <!-- MODAL POPUP XEM CHI TIẾT HỌC SINH -->
-  <div id="studentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4 print:hidden">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all border border-slate-200">
-      <div class="bg-blue-950 text-white px-6 py-4 flex justify-between items-center">
-        <h3 class="font-bold text-base flex items-center gap-2" id="modalTitle">
-          <span>📋</span> Thông Tin Chi Tiết Hồ Sơ
-        </h3>
-        <button onclick="closeStudentModal()" class="text-slate-300 hover:text-white text-2xl font-bold leading-none">&times;</button>
-      </div>
-      
-      <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto" id="modalContent">
-        <!-- Nội dung sẽ được render từ JS -->
-      </div>
-
-      <div class="bg-slate-50 px-6 py-3 text-right border-t border-slate-200">
-        <button onclick="closeStudentModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition">
-          Đóng cửa sổ
-        </button>
+      <div class="text-xs text-slate-500 font-medium">
+        Hiển thị <span id="countVisible" class="font-bold text-blue-900">0</span> học sinh
       </div>
     </div>
-  </div>
 
-  <script>
-  // 🔑 MẬT KHẨU QUẢN TRỊ
-  const ADMIN_PASSWORD = "TSTHPTNDT@123"; 
-
-  let activeTab = 'NHAPHOC';
-  let currentDataNH = [];
-  let currentDataTH = [];
-  let currentDataDetail = [];
-  let lockState = { nhapHoc: false, toHop: false };
-
-  // 1. KIỂM TRA ĐĂNG NHẬP KHI MỞ TRANG
-  window.onload = function() {
-    if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
-      const authModal = document.getElementById('authModal');
-      if (authModal) authModal.classList.add('hidden');
-      initDashboardData();
-    } else {
-      setTimeout(() => {
-        const passInput = document.getElementById('adminPasswordInput');
-        if (passInput) passInput.focus();
-      }, 300);
-    }
-  };
-
-  // 2. XỬ LÝ ĐĂNG NHẬP ADMIN
-  function checkAdminPassword(e) {
-  if (e && e.preventDefault) e.preventDefault();
-  const passInput = document.getElementById('adminPasswordInput');
-  const inputPass = passInput ? passInput.value : '';
-  const errorEl = document.getElementById('authErrorMsg');
-
-  // Gọi về server GAS để kiểm tra mật khẩu
-  google.script.run.withSuccessHandler(function(isValid) {
-    if (isValid) {
-      sessionStorage.setItem('isAdminAuthenticated', 'true');
-      const authModal = document.getElementById('authModal');
-      if (authModal) authModal.classList.add('hidden');
-      initDashboardData();
-    } else {
-      if (errorEl) errorEl.classList.remove('hidden');
-      if (passInput) {
-        passInput.value = '';
-        passInput.focus();
-      }
-    }
-  }).checkPasswordServer(inputPass); // Gọi hàm kiểm tra ở Server
-}
-  function initDashboardData() {
-    refreshDashboard();
-    loadActiveReport();
-  }
-
-  function getDriveFileId(url) {
-    if (!url || typeof url !== 'string') return null;
-    let match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) return match[1];
-    match = url.match(/id=([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) return match[1];
-    return null;
-  }
-
-  function switchTab(tab) {
-    activeTab = tab;
-    const tabNH = document.getElementById('tabNhapHoc');
-    const tabTH = document.getElementById('tabToHop');
-    const tabDetail = document.getElementById('tabDetail');
-
-    const viewNH = document.getElementById('viewNhapHoc');
-    const viewTH = document.getElementById('viewToHop');
-    const viewDetail = document.getElementById('viewDetail');
-
-    const filterContainer = document.getElementById('filterContainer');
-    const printTitle = document.getElementById('printTitle');
-
-    tabNH.className = "px-4 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900 whitespace-nowrap";
-    tabTH.className = "px-4 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900 whitespace-nowrap";
-    tabDetail.className = "px-4 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900 whitespace-nowrap";
-
-    viewNH.classList.add('hidden');
-    viewTH.classList.add('hidden');
-    viewDetail.classList.add('hidden');
-    filterContainer.classList.remove('hidden');
-
-    if (tab === 'NHAPHOC') {
-      tabNH.className = "px-4 py-2 text-xs font-bold rounded-lg transition bg-white text-blue-900 shadow whitespace-nowrap";
-      viewNH.classList.remove('hidden');
-      printTitle.innerText = "DANH SÁCH HỌC SINH ĐĂNG KÝ NHẬP HỌC LỚP 10";
-    } else if (tab === 'TOHOP') {
-      tabTH.className = "px-4 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-white shadow whitespace-nowrap";
-      viewTH.classList.remove('hidden');
-      printTitle.innerText = "DANH SÁCH ĐĂNG KÝ TỔ HỢP MÔN HỌC LỚP 10";
-    } else if (tab === 'DETAIL') {
-      tabDetail.className = "px-4 py-2 text-xs font-bold rounded-lg transition bg-indigo-600 text-white shadow whitespace-nowrap";
-      viewDetail.classList.remove('hidden');
-      filterContainer.classList.add('hidden');
-      printTitle.innerText = "DANH SÁCH HỒ SƠ NHẬP HỌC CHI TIẾT";
-    }
-    loadActiveReport();
-  }
-
-  function refreshDashboard() {
-    google.script.run.withSuccessHandler(function(res) {
-      if(res && res.success) {
-        document.getElementById('statTotal').innerText = res.stats.trungTuyen;
-        document.getElementById('statDaDangKy').innerText = res.stats.daDangKy;
-        document.getElementById('statChuaDangKy').innerText = res.stats.chuaDangKy;
-
-        lockState = res.lockStatus;
-        updateLockUI('NH', lockState.nhapHoc);
-        updateLockUI('TH', lockState.toHop);
-      }
-    }).getAdminDashboardData();
-  }
-
-  function updateLockUI(type, isLocked) {
-    const statusEl = document.getElementById(type === 'NH' ? 'statusLockNH' : 'statusLockTH');
-    const btnEl = document.getElementById(type === 'NH' ? 'btnLockNH' : 'btnLockTH');
-
-    if (isLocked) {
-      statusEl.className = "inline-block mt-2 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800";
-      statusEl.innerText = "🔒 ĐÃ KHÓA (TRUE)";
-      btnEl.innerText = "MỞ KHÓA";
-      btnEl.className = "px-4 py-2 text-xs font-bold rounded-xl text-white bg-emerald-600 hover:bg-emerald-500 transition shadow";
-    } else {
-      statusEl.className = "inline-block mt-2 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
-      statusEl.innerText = "🔓 ĐANG MỞ (FALSE)";
-      btnEl.innerText = "KHÓA LẠI";
-      btnEl.className = "px-4 py-2 text-xs font-bold rounded-xl text-white bg-rose-600 hover:bg-rose-500 transition shadow";
-    }
-  }
-
-  function toggleLock(type) {
-    const targetState = type === 'NH' ? !lockState.nhapHoc : !lockState.toHop;
-    const confirmMsg = targetState ? "Bạn chắc chắn muốn KHÓA?" : "Bạn chắc chắn muốn MỞ KHÓA?";
-    if (!confirm(confirmMsg)) return;
-
-    if (type === 'NH') {
-      google.script.run.withSuccessHandler(function(res) {
-        alert(res.message);
-        lockState.nhapHoc = res.isLock;
-        updateLockUI('NH', res.isLock);
-      }).toggleLockNhapHoc(targetState);
-    } else {
-      google.script.run.withSuccessHandler(function(res) {
-        alert(res.message);
-        lockState.toHop = res.isLock;
-        updateLockUI('TH', res.isLock);
-      }).toggleLockToHop(targetState);
-    }
-  }
-
-  function loadActiveReport() {
-    if (activeTab === 'NHAPHOC') {
-      loadReportNhapHoc();
-    } else if (activeTab === 'TOHOP') {
-      loadReportToHop();
-    } else if (activeTab === 'DETAIL') {
-      loadReportDetail();
-    }
-  }
-
-  function loadReportNhapHoc() {
-  const type = document.getElementById('filterType').value;
-  const tbody = document.getElementById('tableNhapHocBody');
-  tbody.innerHTML = '<tr><td colspan="9" class="p-4 text-center text-slate-400"><span class="loader"></span> Đang tải...</td></tr>';
-
-  google.script.run
-    .withSuccessHandler(function(res) {
-      /* Logic giữ nguyên */
-    })
-    .withFailureHandler(function(err) {
-      tbody.innerHTML = '<tr><td colspan="9" class="p-4 text-center text-rose-500 font-bold">⚠️ Lỗi kết nối máy chủ: ' + err.message + '</td></tr>';
-    })
-    .getReportData(type);
-}
-
-  function saveGhiChu(sbd, value, inputEl) {
-  inputEl.disabled = true; // Vô hiệu hóa tạm thời để tránh sửa trùng
-  inputEl.classList.remove('border-slate-300', 'border-emerald-500', 'border-rose-500');
-  inputEl.classList.add('border-amber-400', 'bg-amber-50');
-
-  google.script.run
-    .withSuccessHandler(function(res) {
-      inputEl.disabled = false;
-      if (res && res.success) {
-        inputEl.classList.remove('border-amber-400', 'bg-amber-50');
-        inputEl.classList.add('border-emerald-500', 'bg-emerald-50');
-        setTimeout(() => {
-          inputEl.classList.remove('border-emerald-500', 'bg-emerald-50');
-          inputEl.classList.add('border-slate-300');
-        }, 1500);
-      } else {
-        alert("Lỗi khi lưu ghi chú: " + (res.message || 'Không rõ nguyên nhân'));
-        inputEl.classList.remove('border-amber-400', 'bg-amber-50');
-        inputEl.classList.add('border-rose-500', 'bg-rose-50');
-      }
-    })
-    .withFailureHandler(function(err) {
-      inputEl.disabled = false;
-      alert("Lỗi kết nối máy chủ: " + err);
-    })
-    .updateGhiChuTrungTuyen(sbd, value);
-}
-  function loadReportToHop() {
-    const type = document.getElementById('filterType').value;
-    const tbody = document.getElementById('tableToHopBody');
-    tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-slate-400"><span class="loader"></span> Đang tải...</td></tr>';
-
-    google.script.run.withSuccessHandler(function(res) {
-      if (res && res.success && res.data.length > 0) {
-        currentDataTH = res.data;
-        let html = '';
-        res.data.forEach(item => {
-          const isReg = item.trangThai === 'Đã chọn tổ hợp';
-          const badgeClass = isReg ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800';
-          html += `<tr class="hover:bg-slate-50 transition">
-            <td class="p-3 text-center font-bold text-slate-400">${item.stt}</td>
-            <td class="p-3 font-mono font-bold text-blue-900">${item.sbd || ''}</td>
-            <td class="p-3 font-bold uppercase text-slate-800">${item.hoTen || ''}</td>
-            <td class="p-3 text-slate-600">${item.ngaySinh || ''}</td>
-            <td class="p-3 font-mono text-slate-700">${item.sdt || ''}</td>
-            <td class="p-3 font-semibold text-blue-900">${item.nv1 || 'Chưa đăng ký'}</td>
-            <td class="p-3 font-semibold text-amber-800">${item.nv2 || 'Chưa đăng ký'}</td>
-            <td class="p-3 text-center"><span class="px-2.5 py-0.5 rounded-full font-bold text-[10px] ${badgeClass}">${item.trangThai || 'Chưa đăng ký'}</span></td>
-          </tr>`;
-        });
-        tbody.innerHTML = html;
-      } else {
-        currentDataTH = [];
-        tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-slate-400">Không có dữ liệu phù hợp.</td></tr>';
-      }
-    }).getReportDataToHop(type);
-  }
-
-  function loadReportDetail() {
-    const tbody = document.getElementById('tableDetailBody');
-    tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-slate-400"><span class="loader"></span> Đang tải...</td></tr>';
-
-    google.script.run.withSuccessHandler(function(res) {
-      if (res && res.success && res.data.length > 0) {
-        currentDataDetail = res.data;
-        let html = '';
-        res.data.forEach((item, index) => {
-          html += `<tr class="hover:bg-slate-50 transition">
-            <td class="p-3 text-center font-bold text-slate-400">${index + 1}</td>
-            <td class="p-3 font-mono font-bold text-indigo-700">${item.sbd || ''}</td>
-            <td class="p-3 font-bold uppercase text-slate-800">${item.hoTen || ''}</td>
-            <td class="p-3 text-slate-600">${item.ngaySinh || ''}</td>
-            <td class="p-3 font-mono text-slate-700">${item.sdt || ''}</td>
-            <td class="p-3 text-slate-600">${item.truongTHCS || ''}</td>
-            <td class="p-3 text-center font-bold text-emerald-600">${item.tongDiem !== undefined ? item.tongDiem : ''}</td>
-            <td class="p-3 text-center">
-              <button onclick="openStudentModal(${index})" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold border border-indigo-200 transition inline-flex items-center gap-1">
-                📄 Xem chi tiết & Tệp
-              </button>
-            </td>
-          </tr>`;
-        });
-        tbody.innerHTML = html;
-      } else {
-        currentDataDetail = [];
-        tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-slate-400">Chưa có học sinh nào hoàn tất đăng ký nhập học.</td></tr>';
-      }
-    }).getDanhSachNhapHocDetail();
-  }
-
-  function openStudentModal(index) {
-    const hs = currentDataDetail[index];
-    if (!hs) return;
-
-    document.getElementById('modalTitle').innerText = 'Hồ sơ học sinh: ' + (hs.hoTen || '');
-
-    const fileId = getDriveFileId(hs.fileUrl);
-    let mediaEmbedHtml = '';
-
-    if (fileId) {
-      const directImgUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
-      const fallbackUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000';
-
-      mediaEmbedHtml = `
-        <div class="mt-4 pt-4 border-t border-slate-200">
-          <div class="flex items-center justify-between mb-2">
-            <span class="font-bold text-slate-700 flex items-center gap-1">
-              📷 Minh chứng đính kèm (CCCD / Giấy khai sinh):
-            </span>
-            <a href="${hs.fileUrl}" target="_blank" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline inline-flex items-center gap-1">
-              🔗 Mở link gốc Drive ↗
-            </a>
-          </div>
-          
-          <div class="bg-slate-900/95 rounded-xl overflow-hidden border border-slate-300 shadow-inner p-2 flex flex-col items-center justify-center min-h-[250px] max-h-[500px]">
-            <img src="${directImgUrl}" 
-                 alt="Minh chứng ${hs.hoTen}" 
-                 class="max-h-[460px] w-auto object-contain rounded transition-all shadow-md"
-                 onerror="this.onerror=null; this.src='${fallbackUrl}';" />
-          </div>
-        </div>
-      `;
-    } else {
-      mediaEmbedHtml = `
-        <div class="mt-4 pt-4 border-t border-slate-200">
-          <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-600 font-semibold text-xs">
-            ⚠️ Học sinh này chưa tải lên tệp minh chứng hoặc đường dẫn không hợp lệ.
-          </div>
-        </div>
-      `;
-    }
-
-    const modalContent = document.getElementById('modalContent');
-    modalContent.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-slate-400 font-bold block mb-1">Họ và tên học sinh</span>
-          <p class="text-sm font-extrabold text-slate-800 uppercase">${hs.hoTen || ''}</p>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-slate-400 font-bold block mb-1">Số báo danh</span>
-          <p class="text-sm font-mono font-extrabold text-indigo-600">${hs.sbd || ''}</p>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-slate-400 font-bold block mb-1">Ngày tháng năm sinh</span>
-          <p class="font-bold text-slate-700">${hs.ngaySinh || 'N/A'}</p>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-slate-400 font-bold block mb-1">Số CCCD / Mã định danh</span>
-          <p class="font-mono font-bold text-slate-700">${hs.cccd || 'N/A'}</p>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-slate-400 font-bold block mb-1">Số điện thoại liên hệ</span>
-          <p class="font-mono font-bold text-slate-700">${hs.sdt || 'N/A'}</p>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-slate-400 font-bold block mb-1">Trường THCS</span>
-          <p class="font-bold text-slate-700">${hs.truongTHCS || 'N/A'}</p>
-        </div>
+    <!-- Bảng Dữ Liệu Học Sinh -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200">
+              <th class="p-3 text-center">STT</th>
+              <th class="p-3">SBD</th>
+              <th class="p-3">Họ và Tên</th>
+              <th class="p-3">Ngày Sinh</th>
+              <th class="p-3">Trường THCS</th>
+              <th class="p-3 text-center">Tổng Điểm</th>
+              <th class="p-3 text-center">Trạng Thái</th>
+              <th class="p-3 text-center">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="8" class="p-8 text-center text-slate-400">
+                <div class="flex justify-center items-center gap-2">
+                  <div class="loader"></div> Đang tải dữ liệu học sinh...
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      ${mediaEmbedHtml}
-    `;
+    </div>
 
-    document.getElementById('studentModal').classList.remove('hidden');
+  </main>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
+  let rawStudentData = [];
+
+  // Đọc dữ liệu khi mở trang
+  document.addEventListener("DOMContentLoaded", () => {
+    loadAdminData();
+  });
+
+  function loadAdminData() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400"><div class="flex justify-center items-center gap-2"><div class="loader"></div> Đang tải dữ liệu...</div></td></tr>`;
+
+    fetch(API_URL + "?action=getAdminData")
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          rawStudentData = res.data;
+          
+          // Cập nhật thẻ thống kê
+          document.getElementById('statTotal').innerText = res.summary.total;
+          document.getElementById('statConfirmed').innerText = res.summary.daNhapHoc;
+          document.getElementById('statPending').innerText = res.summary.chuaNhapHoc;
+          document.getElementById('statRate').innerText = res.summary.rate + '%';
+
+          renderTable(rawStudentData);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-rose-500 font-semibold">⚠️ Lỗi: ${res.message}</td></tr>`;
+        }
+      })
+      .catch(err => {
+        tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-rose-500 font-semibold">❌ Không thể kết nối Server! (${err.message})</td></tr>`;
+      });
   }
-//hamf h
-  function closeStudentModal() {
-    document.getElementById('studentModal').classList.add('hidden');
-  }
 
-  function exportToExcel() {
-    let dataToExport = [];
-    let fileName = "BaoCao.xlsx";
+  function renderTable(data) {
+    const tbody = document.getElementById('tableBody');
+    document.getElementById('countVisible').innerText = data.length;
 
-    if (activeTab === 'NHAPHOC') {
-      dataToExport = currentDataNH.map(item => ({
-        "STT": item.stt,
-        "SBD": item.sbd,
-        "Họ và Tên": item.hoTen,
-        "Ngày Sinh": item.ngaySinh,
-        "Trường THCS": item.truongTHCS,
-        "Tổng Điểm": item.tongDiem,
-        "Nguyện Vọng": item.nguyenVong,
-        "Ghi Chú": item.ghiChu,
-        "Trạng Thái": item.trangThai
-      }));
-      fileName = "DanhSach_NhapHoc.xlsx";
-    } else if (activeTab === 'TOHOP') {
-      dataToExport = currentDataTH.map(item => ({
-        "STT": item.stt,
-        "SBD": item.sbd,
-        "Họ và Tên": item.hoTen,
-        "Ngày Sinh": item.ngaySinh,
-        "SĐT": item.sdt,
-        "Nguyện Vọng 1": item.nv1,
-        "Nguyện Vọng 2": item.nv2,
-        "Trạng Thái": item.trangThai
-      }));
-      fileName = "DanhSach_ToHopMon.xlsx";
-    } else if (activeTab === 'DETAIL') {
-      dataToExport = currentDataDetail.map((item, index) => ({
-        "STT": index + 1,
-        "SBD": item.sbd,
-        "Họ và Tên": item.hoTen,
-        "Ngày Sinh": item.ngaySinh,
-        "CCCD": item.cccd,
-        "SĐT": item.sdt,
-        "Trường THCS": item.truongTHCS,
-        "Tổng Điểm": item.tongDiem,
-        "Đường Dẫn Minh Chứng": item.fileUrl
-      }));
-      fileName = "HoSo_NhapHoc_ChiTiet.xlsx";
-    }
-
-    if (dataToExport.length === 0) {
-      alert("Không có dữ liệu để xuất Excel!");
+    if (data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Không tìm thấy dữ liệu phù hợp</td></tr>`;
       return;
     }
 
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "BaoCao");
-    XLSX.writeFile(workbook, fileName);
+    let html = '';
+    data.forEach((item, index) => {
+      const isConfirmed = item.trangThai === 'Đã đăng ký';
+      const badgeStatus = isConfirmed 
+        ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold text-[11px]">✅ Đã nhập học</span>`
+        : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold text-[11px]">⏳ Chưa xác nhận</span>`;
+
+      html += `
+        <tr class="hover:bg-slate-50/80 transition">
+          <td class="p-3 text-center font-bold text-slate-500">${index + 1}</td>
+          <td class="p-3 font-mono font-bold text-blue-900">${item.sbd}</td>
+          <td class="p-3 font-semibold text-slate-800">${item.fullName}</td>
+          <td class="p-3 text-slate-600">${item.dob}</td>
+          <td class="p-3 text-slate-600">${item.schoolTHCS || '--'}</td>
+          <td class="p-3 text-center font-bold text-indigo-700">${item.tongDiem}</td>
+          <td class="p-3 text-center">${badgeStatus}</td>
+          <td class="p-3 text-center">
+            <button onclick="toggleLock(${item.rowIndex}, ${!item.isLocked})" 
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${item.isLocked ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'}">
+              ${item.isLocked ? '🔒 Đã Khóa' : '🔓 Đang Mở'}
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
   }
 
-  function exportToPDF() {
-    window.print();
+  function filterTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase().trim();
+    const status = document.getElementById('filterStatus').value;
+
+    const filtered = rawStudentData.filter(item => {
+      const matchSearch = item.sbd.toLowerCase().includes(search) ||
+                          item.fullName.toLowerCase().includes(search) ||
+                          (item.schoolTHCS && item.schoolTHCS.toLowerCase().includes(search));
+      
+      const matchStatus = (status === 'ALL') || (item.trangThai === status);
+
+      return matchSearch && matchStatus;
+    });
+
+    renderTable(filtered);
   }
-  </script>
+
+  function toggleLock(rowIndex, newLockState) {
+    if (!confirm(`Bạn có chắc chắn muốn ${newLockState ? 'KHÓA' : 'MỞ KHÓA'} lượt đăng ký của học sinh này?`)) return;
+
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'toggleLock', rowIndex: rowIndex, lockState: newLockState })
+    })
+    .then(res => res.json())
+    .then(res => {
+      alert(res.message);
+      loadAdminData();
+    });
+  }
+</script>
 </body>
 </html>
