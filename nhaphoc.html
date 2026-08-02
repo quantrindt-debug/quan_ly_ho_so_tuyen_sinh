@@ -134,105 +134,112 @@
   <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50">
     <p>© Bản quyền thuộc về <span class="font-semibold">Lê Duy Hải</span> - THPT Nguyễn Duy Trinh</p>
   </footer>
+<script>
+  // URL Web App Google Apps Script của bạn
+  const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
 
-  <script>
-    // URL Web App Google Apps Script của bạn
-    const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
-
-    // Hàm chuyển file sang dạng Base64
-    function getBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          const base64String = reader.result.split(',')[1];
-          resolve({
-            base64: base64String,
-            mimeType: file.type,
-            fileName: file.name
-          });
-        };
-        reader.onerror = error => reject(error);
-      });
-    }
-
-    // Hàm gửi dữ liệu xác nhận nhập học
-    async function submitFormNhapHoc() {
-      const btn = document.getElementById('btnSubmit');
-      const msg = document.getElementById('msg');
-      const fileInput = document.getElementById('fileCCCD');
-
-      // Tách ô ngày sinh thành chuẩn dd/mm/yyyy nếu chọn từ input date
-      let rawDob = document.getElementById('dob').value;
-      let formattedDob = "";
-      if (rawDob) {
-        let parts = rawDob.split('-'); // yyyy-mm-dd
-        if (parts.length === 3) {
-          formattedDob = `${parts[2]}/${parts[1]}/${parts[0]}`;
-        }
-      }
-
-      const payload = {
-        sbd: document.getElementById('sbd').value.trim(),
-        cccd: document.getElementById('cccd').value.trim(),
-        fullName: document.getElementById('fullName').value.trim(),
-        dob: formattedDob,
-        schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        fileData: null
+  // Hàm chuyển file sang dạng Base64
+  function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(',')[1];
+        resolve({
+          base64: base64String,
+          mimeType: file.type,
+          fileName: file.name
+        });
       };
+      reader.onerror = error => reject(error);
+    });
+  }
 
-      // Xử lý chuyển ảnh sang Base64 nếu người dùng chọn file
-      if (fileInput && fileInput.files.length > 0) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="loader"></span> Đang xử lý ảnh minh chứng...';
-        try {
-          payload.fileData = await getBase64(fileInput.files[0]);
-        } catch (err) {
-          alert('Không thể đọc file ảnh, vui lòng chọn lại!');
-          btn.disabled = false;
-          btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-          return;
-        }
+  // Hàm gửi dữ liệu xác nhận nhập học
+  async function submitFormNhapHoc() {
+    const btn = document.getElementById('btnSubmit');
+    const msg = document.getElementById('msg');
+    const fileInput = document.getElementById('fileCCCD');
+
+    // Lấy ngày sinh (Chấp nhận cả input type="date" YYYY-MM-DD hoặc ô gõ chữ DD/MM/YYYY)
+    let rawDob = document.getElementById('dob').value;
+    let formattedDob = rawDob;
+    if (rawDob && rawDob.includes('-')) {
+      let parts = rawDob.split('-'); // yyyy-mm-dd
+      if (parts.length === 3) {
+        formattedDob = `${parts[2]}/${parts[1]}/${parts[0]}`;
       }
-
-      // Khóa nút và cập nhật hiệu ứng tải
-      btn.disabled = true;
-      btn.innerHTML = '<span class="loader"></span> Đang đối soát & Lưu dữ liệu...';
-      msg.classList.add('hidden');
-
-      // Gửi yêu cầu POST tới Apps Script
-      fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(response => response.json())
-      .then(res => {
-        btn.disabled = false;
-        btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-        msg.classList.remove('hidden');
-
-        if (res.status === 'success') {
-          msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
-          msg.innerHTML = "🎉 <strong>Thành công:</strong> " + res.message;
-          document.getElementById('formNhapHoc').reset();
-        } else {
-          msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-          msg.innerHTML = "⚠️ <strong>Lỗi đối soát:</strong> " + res.message;
-        }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-        msg.classList.remove('hidden');
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerHTML = "❌ <strong>Lỗi hệ thống:</strong> Không thể kết nối Server (" + err.message + ")";
-      });
     }
-  </script>
+
+    const payload = {
+      sbd: document.getElementById('sbd').value.trim(),
+      cccd: document.getElementById('cccd').value.trim(),
+      fullName: document.getElementById('fullName').value.trim(),
+      dob: formattedDob,
+      schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      address: document.getElementById('address').value.trim(),
+      fileData: null
+    };
+
+    // Xử lý chuyển ảnh sang Base64 nếu người dùng chọn file
+    if (fileInput && fileInput.files.length > 0) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loader"></span> Đang xử lý tệp minh chứng...';
+      try {
+        payload.fileData = await getBase64(fileInput.files[0]);
+      } catch (err) {
+        alert('Không thể đọc tệp tin, vui lòng chọn lại!');
+        btn.disabled = false;
+        btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+        return;
+      }
+    }
+
+    // Khóa nút và cập nhật hiệu ứng tải
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span> Đang đối soát & Lưu dữ liệu...';
+    msg.classList.add('hidden');
+
+    // Gửi yêu cầu POST tới Apps Script
+    fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(async response => {
+      // Đọc dạng chuỗi thô trước để chống lỗi parse HTML của Google
+      const text = await response.text();
+      try {
+        return JSON.parse(text); 
+      } catch (e) {
+        throw new Error("Phản hồi từ Server không đúng định dạng. Vui lòng thử lại!");
+      }
+    })
+    .then(res => {
+      btn.disabled = false;
+      btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+      msg.classList.remove('hidden');
+
+      if (res.status === 'success') {
+        msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
+        msg.innerHTML = "🎉 <strong>Thành công:</strong> " + res.message;
+        document.getElementById('formNhapHoc').reset();
+      } else {
+        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
+        msg.innerHTML = "⚠️ <strong>Lỗi đối soát:</strong> " + res.message;
+      }
+    })
+    .catch(err => {
+      btn.disabled = false;
+      btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+      msg.classList.remove('hidden');
+      msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
+      msg.innerHTML = "❌ <strong>Lỗi kết nối:</strong> " + err.message;
+    });
+  }
+</script>
 </body>
 </html>
