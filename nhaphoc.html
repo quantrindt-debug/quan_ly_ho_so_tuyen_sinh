@@ -110,7 +110,7 @@
         <!-- Upload File minh chứng -->
         <div class="p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl space-y-2">
           <label class="block text-xs font-bold text-slate-700">📸 Tải Ảnh Minh Chứng (Mặt trước CCCD hoặc Giấy khai sinh)</label>
-          <input type="file" id="fileCCCD" accept="image/*"
+          <input type="file" id="fileCCCD" accept="image/*" 
                  class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-100 file:text-blue-800 hover:file:bg-blue-200 cursor-pointer">
           <p class="text-[11px] text-slate-400">Định dạng hỗ trợ: JPG, PNG, WEBP. Dung lượng nên nhỏ hơn 5MB.</p>
         </div>
@@ -139,19 +139,71 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
 
 
+  // Hàm NÉN ẢNH VÀ CHUYỂN BẢNG BASE64 AN TOÀN (Chống quá tải dung lượng Server)
   function getBase64(file) {
     return new Promise((resolve, reject) => {
+      // Nếu là file PDF thì không nén, đọc trực tiếp
+      if (file.type && file.type.includes('pdf')) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const base64String = reader.result.split(',')[1];
+          resolve({
+            data: base64String,
+            base64: base64String,
+            mimeType: file.type,
+            name: file.name,
+            fileName: file.name
+          });
+        };
+        reader.onerror = error => reject(error);
+        return;
+      }
+
+      // Xử lý nén ảnh bằng Canvas trước khi gửi
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result.split(',')[1];
-        resolve({
-          data: base64String,        // Đặt tên biến là 'data' chuẩn code cũ
-          base64: base64String,      // Dự phòng 'base64'
-          mimeType: file.type,
-          name: file.name,           // Đặt tên biến là 'name' chuẩn code cũ
-          fileName: file.name
-        });
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Khống chế kích thước tối đa 1200px (Đủ nét để đọc rõ CCCD/Khai sinh)
+          const MAX_SIZE = 1200;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height = Math.round((height * MAX_SIZE) / width);
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width = Math.round((width * MAX_SIZE) / height);
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Nén chất lượng về 0.75 (Giảm 80% dung lượng file nhưng ảnh vẫn rất rõ)
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+          const base64String = dataUrl.split(',')[1];
+
+          resolve({
+            data: base64String,
+            base64: base64String,
+            mimeType: 'image/jpeg',
+            name: file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+            fileName: file.name.replace(/\.[^/.]+$/, "") + ".jpg"
+          });
+        };
+        img.onerror = error => reject(error);
       };
       reader.onerror = error => reject(error);
     });
