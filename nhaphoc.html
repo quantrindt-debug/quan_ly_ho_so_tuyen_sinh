@@ -217,39 +217,44 @@
 
     // Gửi dữ liệu qua fetch API đến Google Apps Script
     function sendData(payload) {
-      const btn = document.getElementById('btnSubmit');
-      const msg = document.getElementById('msg');
+  const btn = document.getElementById('btnSubmit');
+  const msg = document.getElementById('msg');
 
-      fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(response => response.json())
-      .then(res => {
-        btn.disabled = false;
-        btn.innerText = 'XÁC NHẬN NHẬP HỌC';
-        msg.classList.remove('hidden');
-
-        if (res.success || res.status === 'success') {
-          msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
-          msg.innerText = "✅ " + (res.message || "Xác nhận nhập học thành công!");
-          document.getElementById('formNhapHoc').reset();
-        } else {
-          msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-          msg.innerText = "🔒 " + (res.message || "Có lỗi xảy ra, vui lòng thử lại!");
-        }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        btn.innerText = 'XÁC NHẬN NHẬP HỌC';
-        msg.classList.remove('hidden');
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = "❌ Lỗi kết nối máy chủ: " + err.message;
-      });
+  fetch(GAS_WEB_APP_URL, {
+    method: 'POST', // 🚨 BẮT BUỘC PHẢI LÀ 'POST'
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8' // Dùng text/plain để tránh bị chặn CORS preflight
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Máy chủ trả về mã lỗi: " + response.status);
     }
+    return response.json();
+  })
+  .then(res => {
+    btn.disabled = false;
+    btn.innerText = 'XÁC NHẬN NHẬP HỌC';
+    msg.classList.remove('hidden');
+
+    if (res.success || res.status === 'success') {
+      msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
+      msg.innerText = "✅ " + (res.message || "Xác nhận nhập học thành công!");
+      document.getElementById('formNhapHoc').reset();
+    } else {
+      msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
+      msg.innerText = "🔒 " + (res.message || "Có lỗi xảy ra, vui lòng thử lại!");
+    }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btn.innerText = 'XÁC NHẬN NHẬP HỌC';
+    msg.classList.remove('hidden');
+    msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
+    msg.innerText = "❌ Lỗi kết nối máy chủ: " + err.message;
+  });
+}
   </script>
 </body>
 </html>
