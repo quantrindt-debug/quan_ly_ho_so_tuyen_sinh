@@ -217,7 +217,31 @@
         }
       }, 200);
     }
+// Đoạn xử lý khi gửi form xác nhận nhập học
+async function submitFormNhapHoc(formDataPayload) {
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      // Dùng text/plain để tránh bị trình duyệt gửi yêu cầu OPTIONS (CORS preflight) gây lỗi 404/CORS trên Google Apps Script
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(formDataPayload)
+    });
 
+    const result = await response.json();
+    
+    if (result.status === "success" || result.success === true) {
+      alert("Đăng ký nhập học thành công!");
+      // Xử lý chuyển trang hoặc hiển thị thông báo thành công
+    } else {
+      alert("Lỗi: " + (result.message || "Đăng ký không thành công!"));
+    }
+  } catch (error) {
+    console.error("Lỗi gửi dữ liệu:", error);
+    alert("Lỗi kết nối máy chủ: " + error.message);
+  }
+}
     function formatDateVN(dateStr) {
       if (!dateStr) return "";
       var str = String(dateStr).trim();
