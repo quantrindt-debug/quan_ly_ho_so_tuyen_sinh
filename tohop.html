@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng Ký Tổ Hợp Môn - THPT Nguyễn Duy Trinh</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
     .font-school { font-family: 'Merriweather', serif; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-100 via-blue-50/40 to-slate-200 min-h-screen p-3 md:p-6 flex flex-col justify-between">
+<body class="bg-gradient-to-br from-slate-100 via-amber-50/30 to-slate-200 min-h-screen p-3 md:p-6 flex flex-col justify-between">
 
   <!-- Container Chính -->
   <div class="max-w-2xl w-full mx-auto bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden my-auto">
@@ -33,7 +33,7 @@
           ĐĂNG KÝ TỔ HỢP MÔN HỌC LỚP 10
         </h1>
         <p class="text-amber-100 text-xs md:text-sm font-normal mt-2 max-w-lg mx-auto opacity-90 leading-relaxed">
-          Bước 2: Lựa chọn nguyện vọng tổ hợp môn học lựa chọn năm học 2026 - 2027
+          Năm học 2026 - 2027 (Chương trình GDPT 2018)
         </p>
       </div>
     </div>
@@ -41,7 +41,7 @@
     <!-- THANH ĐIỀU HƯỚNG -->
     <div class="bg-slate-50 px-6 py-3 border-b border-slate-200 flex justify-between items-center text-xs">
       <div class="flex items-center gap-1.5 font-semibold text-amber-950 uppercase">
-        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
         <span>Đăng ký nguyện vọng môn học</span>
       </div>
       <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline flex items-center gap-1 transition">
@@ -54,13 +54,13 @@
       <!-- BƯỚC 1: TRA CỨU XÁC THỰC HỌC SINH -->
       <div id="stepVerify" class="space-y-4">
         <p class="text-xs text-amber-900 bg-amber-50/80 p-3.5 rounded-xl border border-amber-200/80 leading-relaxed">
-          📌 Học sinh cần nhập chính xác <strong>Số Báo Danh</strong> và <strong>Ngày Sinh</strong> đã Đăng ký Nhập học thành công ở Bước 1 để tiếp tục.
+          📌 Học sinh nhập chính xác <strong>Số Báo Danh</strong> và <strong>Ngày Sinh</strong> đã trúng tuyển để tiến hành lựa chọn tổ hợp môn học.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block font-semibold text-slate-800 mb-1">Số Báo Danh (*)</label>
-            <input type="text" id="vSbd" required placeholder="Nhập SBD" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
+            <input type="text" id="vSbd" required placeholder="Nhập SBD" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white uppercase">
           </div>
           <div>
             <label class="block font-semibold text-slate-800 mb-1">
@@ -78,22 +78,26 @@
       </div>
 
       <!-- BƯỚC 2: ĐIỀN NGUYỆN VỌNG TỔ HỢP -->
-      <form id="formToHap" onsubmit="handleToHapSubmit(event)" class="hidden space-y-5 pt-2">
+      <form id="formToHap" onsubmit="handleToHapSubmit(event)" class="hidden space-y-5 pt-1">
         
         <!-- Thẻ hiển thị thông tin học sinh sau xác thực -->
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1.5">
-          <p class="font-medium text-slate-600">Họ và tên: <strong id="lblFullName" class="text-blue-900 text-sm uppercase"></strong></p>
-          <p class="font-medium text-slate-600">Số báo danh: <strong id="lblSbd" class="text-slate-900"></strong> | Trường THCS: <strong id="lblSchool" class="text-slate-900"></strong></p>
+        <div class="p-4 bg-amber-50/60 border border-amber-200/80 rounded-2xl text-xs space-y-1.5">
+          <div class="flex justify-between items-center border-b border-amber-200/60 pb-2 mb-2">
+            <span class="font-bold text-amber-950 uppercase">Thông tin học sinh:</span>
+            <button type="button" onclick="resetFormStep()" class="text-blue-700 font-semibold hover:underline">🔄 Đổi SBD khác</button>
+          </div>
+          <p class="font-medium text-slate-700">Họ và tên: <strong id="lblFullName" class="text-blue-900 text-sm uppercase"></strong></p>
+          <p class="font-medium text-slate-700">Số báo danh: <strong id="lblSbd" class="text-slate-900 font-mono"></strong> | Trường THCS: <strong id="lblSchool" class="text-slate-900"></strong></p>
         </div>
 
         <div class="space-y-4">
           <p class="text-xs font-bold text-amber-900 uppercase tracking-wider border-b pb-1">
-            Lựa chọn 3 nguyện vọng tổ hợp môn (Không trùng lặp)
+            Lựa chọn 3 nguyện vọng tổ hợp môn (Không được trùng lặp)
           </p>
 
           <div>
             <label class="block font-semibold text-slate-800 mb-1">Nguyện vọng 1 (*)</label>
-            <select id="nv1" required class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
+            <select id="nv1" required onchange="validateSelections()" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white text-xs md:text-sm">
               <option value="">-- Chọn tổ hợp NV1 --</option>
               <option value="Tổ hợp 1 (Vật lý - Hóa học - Sinh học)">Tổ hợp 1 (Vật lý - Hóa học - Sinh học)</option>
               <option value="Tổ hợp 2 (Vật lý - Hóa học - Tin học)">Tổ hợp 2 (Vật lý - Hóa học - Tin học)</option>
@@ -104,7 +108,7 @@
 
           <div>
             <label class="block font-semibold text-slate-800 mb-1">Nguyện vọng 2 (*)</label>
-            <select id="nv2" required class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
+            <select id="nv2" required onchange="validateSelections()" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white text-xs md:text-sm">
               <option value="">-- Chọn tổ hợp NV2 --</option>
               <option value="Tổ hợp 1 (Vật lý - Hóa học - Sinh học)">Tổ hợp 1 (Vật lý - Hóa học - Sinh học)</option>
               <option value="Tổ hợp 2 (Vật lý - Hóa học - Tin học)">Tổ hợp 2 (Vật lý - Hóa học - Tin học)</option>
@@ -115,7 +119,7 @@
 
           <div>
             <label class="block font-semibold text-slate-800 mb-1">Nguyện vọng 3 (*)</label>
-            <select id="nv3" required class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white">
+            <select id="nv3" required onchange="validateSelections()" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition bg-slate-50/50 focus:bg-white text-xs md:text-sm">
               <option value="">-- Chọn tổ hợp NV3 --</option>
               <option value="Tổ hợp 1 (Vật lý - Hóa học - Sinh học)">Tổ hợp 1 (Vật lý - Hóa học - Sinh học)</option>
               <option value="Tổ hợp 2 (Vật lý - Hóa học - Tin học)">Tổ hợp 2 (Vật lý - Hóa học - Tin học)</option>
@@ -150,9 +154,11 @@
 
   <script>
     // 🔗 ĐIỀN URL WEB APP GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY:
-    const GAS_WEB_APP_URL = "THAY_URL_WEB_APP_CUA_BAN_VAO_DAY";
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
 
-    // Định dạng tự động khi nhập Ngày sinh dd/mm/yyyy
+    let currentStudent = null;
+
+    // Tự động định dạng gõ Ngày sinh dd/mm/yyyy
     document.getElementById('vDob').addEventListener('input', function(e) {
       let v = this.value.replace(/\D/g, '').slice(0, 8);
       if (v.length > 4) {
@@ -164,8 +170,6 @@
       }
     });
 
-    let currentStudent = null;
-
     // Hàm xác nhận thông tin ở Bước 1
     function verifyHocSinh() {
       const sbd = document.getElementById('vSbd').value.trim();
@@ -174,17 +178,13 @@
       const msg = document.getElementById('verifyMsg');
 
       if (!sbd || !dob) { 
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = '⚠️ Vui lòng điền đầy đủ Số Báo Danh và Ngày Sinh!'; 
-        msg.classList.remove('hidden');
+        showMsg(msg, 'rose', '⚠️ Vui lòng điền đầy đủ Số Báo Danh và Ngày Sinh!');
         return; 
       }
 
       const regexDob = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/\d{4}$/;
       if (!regexDob.test(dob)) {
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = "⚠️ Vui lòng nhập Ngày sinh đúng định dạng dd/mm/yyyy (Ví dụ: 15/08/2009)!";
-        msg.classList.remove('hidden');
+        showMsg(msg, 'rose', '⚠️ Vui lòng nhập Ngày sinh đúng định dạng dd/mm/yyyy (Ví dụ: 15/08/2009)!');
         return;
       }
 
@@ -192,73 +192,79 @@
       btn.innerText = '⏳ Đang kiểm tra dữ liệu...';
       msg.classList.add('hidden');
 
-      const payload = {
-        action: "checkHocSinhNhapHoc",
-        sbd: sbd,
-        dob: dob
-      };
-
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ action: "checkHocSinhToHap", sbd: sbd, dob: dob })
       })
       .then(res => res.json())
       .then(res => {
         btn.disabled = false;
         btn.innerText = 'XÁC NHẬN THÔNG TIN';
 
-        if (res.success || res.status === 'success') {
-          currentStudent = res;
+        if (res.status === 'success' || res.success) {
+          currentStudent = res.data || res;
+          
           document.getElementById('stepVerify').classList.add('hidden');
           document.getElementById('formToHap').classList.remove('hidden');
 
-          document.getElementById('lblFullName').innerText = res.fullName || res.data?.fullName || "";
-          document.getElementById('lblSbd').innerText = res.sbd || res.data?.sbd || sbd;
-          document.getElementById('lblSchool').innerText = res.schoolTHCS || res.data?.schoolTHCS || "";
+          document.getElementById('lblFullName').innerText = currentStudent.fullName || "";
+          document.getElementById('lblSbd').innerText = currentStudent.sbd || sbd;
+          document.getElementById('lblSchool').innerText = currentStudent.schoolTHCS || "--";
+
+          // Nếu học sinh đã chọn trước đó, điền lại lựa chọn
+          if (currentStudent.nv1) document.getElementById('nv1').value = currentStudent.nv1;
+          if (currentStudent.nv2) document.getElementById('nv2').value = currentStudent.nv2;
+          if (currentStudent.nv3) document.getElementById('nv3').value = currentStudent.nv3;
+
         } else {
-          msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold leading-relaxed';
-          var errMsg = res.message || "Không tìm thấy thông tin học sinh!";
-          msg.innerText = (errMsg.indexOf("khóa") !== -1 || errMsg.indexOf("khoá") !== -1) 
-            ? "🔒 " + errMsg 
-            : "⚠️ " + errMsg;
-          msg.classList.remove('hidden');
+          showMsg(msg, 'rose', res.message || "Không tìm thấy thông tin học sinh!");
         }
       })
       .catch(err => {
         btn.disabled = false;
         btn.innerText = 'XÁC NHẬN THÔNG TIN';
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = "❌ Lỗi kết nối: " + err.message;
-        msg.classList.remove('hidden');
+        showMsg(msg, 'rose', "❌ Lỗi kết nối: " + err.message);
       });
     }
 
-    // Hàm xử lý gửi nguyện vọng tổ hợp ở Bước 2
-    function handleToHapSubmit(e) {
-      e.preventDefault();
+    // Kiểm tra trùng lặp real-time khi học sinh chọn nguyện vọng
+    function validateSelections() {
       const nv1 = document.getElementById('nv1').value;
       const nv2 = document.getElementById('nv2').value;
       const nv3 = document.getElementById('nv3').value;
       const msg = document.getElementById('submitMsg');
 
-      if (nv1 === nv2 || nv1 === nv3 || nv2 === nv3) {
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = '⚠️ Các nguyện vọng chọn tổ hợp môn không được trùng nhau! Vui lòng chọn lại.';
-        msg.classList.remove('hidden');
-        return;
+      if ((nv1 && nv2 && nv1 === nv2) || (nv1 && nv3 && nv1 === nv3) || (nv2 && nv3 && nv2 === nv3)) {
+        showMsg(msg, 'rose', '⚠️ Các nguyện vọng không được trùng nhau! Vui lòng chọn các tổ hợp khác nhau.');
+        return false;
+      } else {
+        msg.classList.add('hidden');
+        return true;
       }
+    }
 
+    // Hàm xử lý gửi nguyện vọng tổ hợp ở Bước 2
+    function handleToHapSubmit(e) {
+      e.preventDefault();
+      
+      if (!validateSelections()) return;
+
+      const nv1 = document.getElementById('nv1').value;
+      const nv2 = document.getElementById('nv2').value;
+      const nv3 = document.getElementById('nv3').value;
       const btn = document.getElementById('btnSubmitToHap');
+      const msg = document.getElementById('submitMsg');
+
       btn.disabled = true;
       btn.innerText = '⏳ Đang gửi đăng ký...';
       msg.classList.add('hidden');
 
       const payload = {
         action: "submitDangKyToHap",
-        sbd: currentStudent.sbd || currentStudent.data?.sbd,
-        fullName: currentStudent.fullName || currentStudent.data?.fullName,
-        dob: currentStudent.dob || currentStudent.data?.dob,
+        sbd: currentStudent.sbd,
+        fullName: currentStudent.fullName,
+        dob: currentStudent.dob,
         nv1: nv1,
         nv2: nv2,
         nv3: nv3
@@ -273,24 +279,31 @@
       .then(res => {
         btn.disabled = false;
         btn.innerText = 'GỬI ĐĂNG KÝ TỔ HỢP';
-        msg.classList.remove('hidden');
 
         if (res.status === 'success' || res.success) {
-          msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
-          msg.innerText = "✅ " + (res.message || "Đăng ký tổ hợp môn thành công!");
-          document.getElementById('formToHap').reset();
+          showMsg(msg, 'emerald', "✅ " + (res.message || "Đăng ký tổ hợp môn thành công!"));
         } else {
-          msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-          msg.innerText = "⚠️ " + (res.message || "Có lỗi xảy ra, vui lòng thử lại!");
+          showMsg(msg, 'rose', "⚠️ " + (res.message || "Có lỗi xảy ra, vui lòng thử lại!"));
         }
       })
       .catch(err => {
         btn.disabled = false;
         btn.innerText = 'GỬI ĐĂNG KÝ TỔ HỢP';
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = "❌ Lỗi kết nối: " + err.message;
-        msg.classList.remove('hidden');
+        showMsg(msg, 'rose', "❌ Lỗi kết nối: " + err.message);
       });
+    }
+
+    function resetFormStep() {
+      document.getElementById('formToHap').classList.add('hidden');
+      document.getElementById('stepVerify').classList.remove('hidden');
+      document.getElementById('verifyMsg').classList.add('hidden');
+      document.getElementById('vSbd').value = '';
+    }
+
+    function showMsg(el, type, text) {
+      el.className = `p-3.5 bg-${type}-50 text-${type}-800 border border-${type}-200 rounded-xl text-xs font-semibold leading-relaxed`;
+      el.innerText = text;
+      el.classList.remove('hidden');
     }
   </script>
 </body>
