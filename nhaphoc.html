@@ -3,258 +3,236 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng Ký Nhập Học - THPT NGUYỄN DUY TRINH</title>
+  <title>Xác Nhận Nhập Học Trực Tuyến - THPT Nguyễn Duy Trinh</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
     .font-school { font-family: 'Merriweather', serif; }
+    .loader {
+      border: 2.5px solid #e2e8f0;
+      border-radius: 50%;
+      border-top: 2.5px solid #ffffff;
+      width: 18px;
+      height: 18px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-100 via-blue-50/40 to-slate-200 min-h-screen p-3 md:p-6 flex flex-col justify-between">
+<body class="bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-200 min-h-screen flex flex-col justify-between">
 
-  <!-- Thẻ Container Chính -->
-  <div class="max-w-2xl w-full mx-auto bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden my-auto">
+  <!-- Header Banner -->
+  <header class="bg-gradient-to-r from-blue-950 via-indigo-900 to-blue-900 text-white py-6 px-4 shadow-xl border-b-4 border-amber-400 relative">
+    <div class="max-w-3xl mx-auto text-center space-y-1.5">
+      <h3 class="text-xs font-bold tracking-widest uppercase text-blue-200/90">SỞ GIÁO DỤC VÀ ĐÀO TẠO NGHỆ AN</h3>
+      <div class="text-xl md:text-3xl font-school font-bold tracking-wide uppercase text-amber-300">TRƯỜNG THPT NGUYỄN DUY TRINH</div>
+      <p class="text-xs md:text-sm text-blue-100 font-extrabold uppercase tracking-wider">XÁC NHẬN NHẬP HỌC TRỰC TUYẾN LỚP 10 (2026-2027)</p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-2xl mx-auto p-4 md:p-6 w-full my-auto">
     
-    <!-- BANNER TIÊU ĐỀ -->
-    <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-900 p-6 md:p-8 text-white text-center relative overflow-hidden">
-      <div class="absolute -right-8 -bottom-8 w-36 h-36 bg-blue-700/20 rounded-full blur-2xl pointer-events-none"></div>
-      <div class="absolute -left-8 -top-8 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
-
-      <div class="relative z-10">
-        <h3 class="text-[11px] md:text-xs font-bold tracking-widest uppercase text-blue-200/90 mb-1">
-          SỞ GIÁO DỤC VÀ ĐÀO TẠO NGHỆ AN
-        </h3>
-        <h2 class="text-xl md:text-2xl font-school font-bold tracking-wide uppercase text-amber-300 drop-shadow-sm mb-3">
-          TRƯỜNG THPT NGUYỄN DUY TRINH
-        </h2>
-        <div class="w-16 h-0.5 bg-amber-400/80 mx-auto mb-3 rounded-full"></div>
-        <h1 class="text-xl md:text-2xl font-extrabold uppercase tracking-wider text-white drop-shadow-md">
-          CỔNG ĐĂNG KÝ NHẬP HỌC LỚP 10
-        </h1>
-        <p class="text-blue-100 text-xs md:text-sm font-normal mt-2 max-w-lg mx-auto opacity-90 leading-relaxed">
-          Vui lòng điền chính xác thông tin để đối chiếu với danh sách trúng tuyển
-        </p>
-      </div>
-    </div>
-
-    <!-- THANH ĐIỀU HƯỚNG NHỎ -->
-    <div class="bg-slate-50 px-6 py-3 border-b border-slate-200 flex justify-between items-center text-xs">
-      <div class="flex items-center gap-1.5 font-semibold text-blue-950 uppercase">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span>Xác Nhận Nhập Học Trực Tuyến</span>
-      </div>
-      <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline flex items-center gap-1 transition">
-        🏠 Trang chủ
-      </a>
-    </div>
-
-    <!-- FORM NHẬP LIỆU -->
-    <form id="formNhapHoc" onsubmit="handleFormSubmit(event)" class="p-6 md:p-8 space-y-5 text-sm text-slate-700">
+    <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-200 space-y-6">
       
-      <!-- Nhóm 1: Thông tin đối chiếu -->
-      <div class="space-y-4">
-        <p class="text-xs font-bold text-blue-900 uppercase tracking-wider border-b pb-1">
-          1. Thông tin tra cứu & đối chiếu danh sách
-        </p>
+      <!-- Tiêu đề Form & Quay lại -->
+      <div class="flex items-center justify-between border-b pb-4">
+        <div>
+          <h2 class="text-lg font-bold text-blue-950">📝 Hồ Sơ Xác Nhận Nhập Học</h2>
+          <p class="text-xs text-slate-500">Vui lòng nhập đúng thông tin đối soát theo kết quả xét tuyển</p>
+        </div>
+        <a href="./index.html" class="text-xs font-semibold text-blue-700 hover:text-blue-900 flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200 transition">
+          ⬅ Trang chủ
+        </a>
+      </div>
+
+      <!-- Form nhập liệu -->
+      <form id="formNhapHoc" onsubmit="event.preventDefault(); submitFormNhapHoc();" class="space-y-4">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Số báo danh -->
           <div>
-            <label class="block font-semibold text-slate-800 mb-1">Số Báo Danh (*)</label>
-            <input type="text" id="sbd" required placeholder="Nhập SBD" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Số Báo Danh (SBD) <span class="text-red-500">*</span></label>
+            <input type="text" id="sbd" required placeholder="Ví dụ: 21300656"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-slate-50/50 focus:bg-white font-mono font-bold">
           </div>
+
+          <!-- Số CCCD / Mã ĐDCN -->
           <div>
-            <label class="block font-semibold text-slate-800 mb-1">Họ và Tên (*)</label>
-            <input type="text" id="fullName" required placeholder="NGUYỄN VĂN A" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition uppercase bg-slate-50/50 focus:bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Số CCCD / Định danh cá nhân <span class="text-red-500">*</span></label>
+            <input type="text" id="cccd" required placeholder="Nhập 12 số CCCD..."
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-slate-50/50 focus:bg-white">
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Họ và tên -->
           <div>
-            <label class="block font-semibold text-slate-800 mb-1">
-              Số ĐDCN / CCCD (*) <span class="text-[11px] font-normal text-slate-500">(12 số)</span>
-            </label>
-            <input type="text" id="cccd" required placeholder="040200123456" maxlength="12" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Họ và Tên Học Sinh <span class="text-red-500">*</span></label>
+            <input type="text" id="fullName" required placeholder="Ví dụ: Nguyễn Văn A"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-slate-50/50 focus:bg-white capitalize">
           </div>
+
+          <!-- Ngày sinh -->
           <div>
-            <label class="block font-semibold text-slate-800 mb-1">
-              Ngày Sinh (*) <span class="text-[11px] font-normal text-amber-700">(dd/mm/yyyy)</span>
-            </label>
-            <input type="text" id="dob" required placeholder="15/08/2011" maxlength="10" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Ngày Tháng Năm Sinh <span class="text-red-500">*</span></label>
+            <input type="date" id="dob" required
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-slate-50/50 focus:bg-white">
           </div>
         </div>
-      </div>
-
-      <!-- Nhóm 2: Thông tin liên hệ -->
-      <div class="space-y-4 pt-2">
-        <p class="text-xs font-bold text-blue-900 uppercase tracking-wider border-b pb-1">
-          2. Thông tin liên lạc & Hồ sơ bổ sung
-        </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Trường THCS -->
           <div>
-            <label class="block font-semibold text-slate-800 mb-1">Trường THCS (*)</label>
-            <input type="text" id="schoolTHCS" required placeholder="Chỉ ghi tên trường: (VD: Nghi Liên)" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Trường THCS Đã Tốt Nghiệp</label>
+            <input type="text" id="schoolTHCS" placeholder="Ví dụ: THCS Nghi Lộc"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-slate-50/50 focus:bg-white">
           </div>
+
+          <!-- Số điện thoại liên hệ -->
           <div>
-            <label class="block font-semibold text-slate-800 mb-1">Số Điện Thoại Liên Hệ (*)</label>
-            <input type="tel" id="phone" required placeholder="0912345678" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Số Điện Thoại Phụ Huynh / Học Sinh <span class="text-red-500">*</span></label>
+            <input type="tel" id="phone" required placeholder="Ví dụ: 0912345678"
+                   class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-slate-50/50 focus:bg-white">
           </div>
         </div>
 
+        <!-- Địa chỉ thường trú -->
         <div>
-          <label class="block font-semibold text-slate-800 mb-1">Địa Chỉ Thường Trú (*)</label>
-          <input type="text" id="address" required placeholder="Xóm,Xã/Phường,Tỉnh..." class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Địa Chỉ Thường Trú Hiện Tại</label>
+          <input type="text" id="address" placeholder="Ví dụ: Xóm Quán Hành 4, Nghi Lộc, Nghệ An"
+                 class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-slate-50/50 focus:bg-white">
         </div>
 
-        <div>
-          <label class="block font-semibold text-slate-800 mb-1">
-            Ảnh CCCD / Giấy Khai Sinh (*) <span class="text-[11px] font-normal text-rose-600">(Bắt buộc đính kèm)</span>
-          </label>
-          <input type="file" id="fileInput" required accept="image/*,.pdf" class="w-full p-2 border border-dashed border-slate-300 rounded-xl text-xs bg-slate-50 hover:bg-slate-100 transition file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        <!-- Upload File minh chứng -->
+        <div class="p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl space-y-2">
+          <label class="block text-xs font-bold text-slate-700">📸 Tải Ảnh Minh Chứng (Mặt trước CCCD hoặc Giấy khai sinh)</label>
+          <input type="file" id="fileCCCD" accept="image/*"
+                 class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-100 file:text-blue-800 hover:file:bg-blue-200 cursor-pointer">
+          <p class="text-[11px] text-slate-400">Định dạng hỗ trợ: JPG, PNG, WEBP. Dung lượng nên nhỏ hơn 5MB.</p>
         </div>
-      </div>
 
-      <!-- Nút gửi -->
-      <button type="submit" id="btnSubmit" class="w-full bg-blue-900 text-white py-3.5 rounded-xl font-bold hover:bg-blue-800 active:scale-[0.99] transition shadow-md shadow-blue-900/20 text-sm tracking-wide mt-2">
-        XÁC NHẬN NHẬP HỌC
-      </button>
+        <!-- Vùng hiển thị thông báo kết quả -->
+        <div id="msg" class="hidden p-3.5 rounded-xl text-xs font-semibold leading-relaxed"></div>
 
-      <!-- Thông báo kết quả -->
-      <div id="msg" class="hidden p-3.5 rounded-xl text-xs font-semibold leading-relaxed"></div>
-    </form>
+        <!-- Nút bấm xác nhận -->
+        <button type="submit" id="btnSubmit"
+                class="w-full bg-blue-900 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-lg shadow-blue-900/20 flex items-center justify-center">
+          XÁC NHẬN NHẬP HỌC TRỰC TUYẾN
+        </button>
 
-    <!-- Thông tin liên hệ nhà trường -->
-    <div class="bg-slate-50 border-t border-slate-200 p-5 text-center text-xs text-slate-600 space-y-1">
-      <p class="font-bold text-blue-950 text-sm uppercase">Trường THPT Nguyễn Duy Trinh</p>
-      <p class="text-slate-500">📍 Xóm Quán Hành 4, Xã Nghi Lộc, Nghệ An</p>
-      <div class="pt-1 flex flex-wrap justify-center gap-3 text-slate-600">
-        <p>📞 Điện thoại: <a href="tel:0978929399" class="font-bold text-blue-700 hover:underline">0978 92 93 99</a> - <a href="tel:0915779656" class="font-bold text-blue-700 hover:underline">0915 779 656</a></p>
-        <p>✉️ Email: <a href="mailto:vanbanndt@nghean.edu.vn" class="font-medium text-slate-700">vanbanndt@nghean.edu.vn</a></p>
-      </div>
+      </form>
+
     </div>
-  </div>
 
-  <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50 space-y-1">
-    <p>© Bản quyền thuộc về <span class="info-hieu-truong">Lê Duy Hải</span> - <span class="info-ten-truong">0978 92 93 99</span></p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50">
+    <p>© Bản quyền thuộc về <span class="font-semibold">Lê Duy Hải</span> - THPT Nguyễn Duy Trinh</p>
   </footer>
 
   <script>
-    // 🔗 URL WEB APP GOOGLE APPS SCRIPT CỦA BẠN:
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
+    // URL Web App Google Apps Script của bạn
+    const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
 
-    // Tự động chèn dấu / khi nhập ngày sinh
-    document.getElementById('dob').addEventListener('input', function(e) {
-      let v = this.value.replace(/\D/g, '').slice(0, 8);
-      if (v.length > 4) {
-        this.value = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
-      } else if (v.length > 2) {
-        this.value = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
-      } else {
-        this.value = v;
-      }
-    });
-
-    // Chỉ cho nhập số ở ô CCCD
-    document.getElementById('cccd').addEventListener('input', function(e) {
-      this.value = this.value.replace(/\D/g, '').slice(0, 12);
-    });
-
-    // Hàm xử lý gửi form
-    function handleFormSubmit(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmit');
-      const msg = document.getElementById('msg');
-      const fileInput = document.getElementById('fileInput');
-
-      // 1. Kiểm tra ngày sinh
-      const dob = document.getElementById('dob').value.trim();
-      const regexDob = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/\d{4}$/;
-      if (!regexDob.test(dob)) {
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = "⚠️ Vui lòng nhập Ngày sinh đúng định dạng dd/mm/yyyy (Ví dụ: 15/08/2009)!";
-        msg.classList.remove('hidden');
-        return;
-      }
-
-      // 2. Kiểm tra file đính kèm
-      if (!fileInput.files || fileInput.files.length === 0) {
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerText = "⚠️ Vui lòng tải lên Ảnh CCCD hoặc Giấy khai sinh đính kèm!";
-        msg.classList.remove('hidden');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerText = '⏳ Đang kiểm tra & gửi dữ liệu...';
-      msg.classList.add('hidden');
-
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-
-      reader.onload = function(evt) {
-        const payload = {
-          action: "submitNhapHoc",
-          sbd: document.getElementById('sbd').value.trim(),
-          fullName: document.getElementById('fullName').value.trim(),
-          cccd: document.getElementById('cccd').value.trim(),
-          dob: dob,
-          schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
-          phone: document.getElementById('phone').value.trim(),
-          address: document.getElementById('address').value.trim(),
-          fileData: {
-            base64: evt.target.result.split(',')[1],
+    // Hàm chuyển file sang dạng Base64
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const base64String = reader.result.split(',')[1];
+          resolve({
+            base64: base64String,
             mimeType: file.type,
             fileName: file.name
-          }
+          });
         };
+        reader.onerror = error => reject(error);
+      });
+    }
 
-        sendData(payload);
+    // Hàm gửi dữ liệu xác nhận nhập học
+    async function submitFormNhapHoc() {
+      const btn = document.getElementById('btnSubmit');
+      const msg = document.getElementById('msg');
+      const fileInput = document.getElementById('fileCCCD');
+
+      // Tách ô ngày sinh thành chuẩn dd/mm/yyyy nếu chọn từ input date
+      let rawDob = document.getElementById('dob').value;
+      let formattedDob = "";
+      if (rawDob) {
+        let parts = rawDob.split('-'); // yyyy-mm-dd
+        if (parts.length === 3) {
+          formattedDob = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+      }
+
+      const payload = {
+        sbd: document.getElementById('sbd').value.trim(),
+        cccd: document.getElementById('cccd').value.trim(),
+        fullName: document.getElementById('fullName').value.trim(),
+        dob: formattedDob,
+        schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        fileData: null
       };
 
-      reader.readAsDataURL(file);
-    }
+      // Xử lý chuyển ảnh sang Base64 nếu người dùng chọn file
+      if (fileInput && fileInput.files.length > 0) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loader"></span> Đang xử lý ảnh minh chứng...';
+        try {
+          payload.fileData = await getBase64(fileInput.files[0]);
+        } catch (err) {
+          alert('Không thể đọc file ảnh, vui lòng chọn lại!');
+          btn.disabled = false;
+          btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+          return;
+        }
+      }
 
-    // Gửi dữ liệu qua fetch API đến Google Apps Script
-    function sendData(payload) {
-  const btn = document.getElementById('btnSubmit');
-  const msg = document.getElementById('msg');
+      // Khóa nút và cập nhật hiệu ứng tải
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loader"></span> Đang đối soát & Lưu dữ liệu...';
+      msg.classList.add('hidden');
 
-  fetch(GAS_WEB_APP_URL, {
-    method: 'POST', // 🚨 BẮT BUỘC PHẢI LÀ 'POST'
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8' // Dùng text/plain để tránh bị chặn CORS preflight
-    },
-    body: JSON.stringify(payload)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Máy chủ trả về mã lỗi: " + response.status);
-    }
-    return response.json();
-  })
-  .then(res => {
-    btn.disabled = false;
-    btn.innerText = 'XÁC NHẬN NHẬP HỌC';
-    msg.classList.remove('hidden');
+      // Gửi yêu cầu POST tới Apps Script
+      fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+        msg.classList.remove('hidden');
 
-    if (res.success || res.status === 'success') {
-      msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
-      msg.innerText = "✅ " + (res.message || "Xác nhận nhập học thành công!");
-      document.getElementById('formNhapHoc').reset();
-    } else {
-      msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-      msg.innerText = "🔒 " + (res.message || "Có lỗi xảy ra, vui lòng thử lại!");
+        if (res.status === 'success') {
+          msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
+          msg.innerHTML = "🎉 <strong>Thành công:</strong> " + res.message;
+          document.getElementById('formNhapHoc').reset();
+        } else {
+          msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
+          msg.innerHTML = "⚠️ <strong>Lỗi đối soát:</strong> " + res.message;
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+        msg.classList.remove('hidden');
+        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
+        msg.innerHTML = "❌ <strong>Lỗi hệ thống:</strong> Không thể kết nối Server (" + err.message + ")";
+      });
     }
-  })
-  .catch(err => {
-    btn.disabled = false;
-    btn.innerText = 'XÁC NHẬN NHẬP HỌC';
-    msg.classList.remove('hidden');
-    msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-    msg.innerText = "❌ Lỗi kết nối máy chủ: " + err.message;
-  });
-}
   </script>
 </body>
 </html>
