@@ -184,82 +184,45 @@ document.getElementById('vCCCD').addEventListener('input', function(e) {
 });
 
 // 1. Hàm xác nhận thông tin học sinh
-function verifyHocSinh() {
-  const sbd = document.getElementById('vSbd').value.trim();
-  const dob = document.getElementById('vDob').value.trim();
-  const cccd = document.getElementById('vCCCD').value.trim();
-  const btn = document.getElementById('btnVerify');
-  const msg = document.getElementById('verifyMsg');
+// Dòng ~220 trở đi trong file tohop.html
+async function verifyHocSinh() {
+  const sbd = document.getElementById('sbd').value.trim();
+  const dob = document.getElementById('dob').value.trim();
+  const cccd = document.getElementById('cccd').value.trim();
 
-  // Kiểm tra rỗng
-  if (!sbd || !dob || !cccd) { 
-    showMsg(msg, 'rose', '⚠️ Vui lòng điền đầy đủ Số Báo Danh, Ngày Sinh và Số CCCD!');
-    return; 
-  }
-
-  // Kiểm tra định dạng ngày sinh
-  const regexDob = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/\d{4}$/;
-  if (!regexDob.test(dob)) {
-    showMsg(msg, 'rose', '⚠️ Vui lòng nhập Ngày sinh đúng định dạng dd/mm/yyyy (Ví dụ: 15/08/2009)!');
+  if (!sbd || !dob || !cccd) {
+    alert("Vui lòng điền đầy đủ SBD, Ngày sinh và CCCD!");
     return;
   }
 
-  // Kiểm tra đủ 12 số CCCD
-  if (cccd.length !== 12) {
-    showMsg(msg, 'rose', '⚠️ Số CCCD/Mã định danh phải bao gồm đúng 12 chữ số!');
-    return;
-  }
+  // 🔴 KIỂM TRA KỸ DÒNG NÀY (Dòng 223 của anh bị sai ở đây)
+  const payload = {
+    action: "checkHocSinhToHop", // Phải có dấu phẩy ở cuối mỗi dòng!
+    sbd: sbd,
+    dob: dob,
+    cccd: cccd
+  };
 
-  btn.disabled = true;
-  btn.innerText = '⏳ Đang kiểm tra dữ liệu...';
-  msg.classList.add('hidden');
+  try {
+    // Hiển thị trạng thái đang tải (Loading) nếu có
+    const response = await fetch("https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
 
-  fetch(GAS_WEB_APP_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    // Gửi đầy đủ sbd, dob, cccd và đúng action
-    body: JSON.stringify({ 
-      // Đoạn JS trên trang Đăng ký tổ hợp phải có dạng:
-    const payload = {
-      action: "submitDangKyToHop", // 👈 BẮT BỘC PHẢI CÓ DÒNG NÀY VÀ ĐÚNG CHÍNH TẢ
-      sbd: sbdValue,
-      fullName: nameValue,
-      dob: dobValue,
-      nv1: nv1Value,
-      nv2: nv2Value,
-      nv3: nv3Value,
-      // ...
-    };
-      
-  .then(res => res.json())
-  .then(res => {
-    btn.disabled = false;
-    btn.innerText = 'XÁC NHẬN THÔNG TIN';
+    const result = await response.json();
 
-    if (res.status === 'success' || res.success) {
-      currentStudent = res.data || res;
-      
-      document.getElementById('stepVerify').classList.add('hidden');
-      document.getElementById('formToHap').classList.remove('hidden');
-
-      document.getElementById('lblFullName').innerText = currentStudent.fullName || "";
-      document.getElementById('lblSbd').innerText = currentStudent.sbd || sbd;
-      document.getElementById('lblSchool').innerText = currentStudent.schoolTHCS || "--";
-
-      // Nếu học sinh đã đăng ký trước đó, điền lại nguyện vọng cũ
-      if (currentStudent.nv1) document.getElementById('nv1').value = currentStudent.nv1;
-      if (currentStudent.nv2) document.getElementById('nv2').value = currentStudent.nv2;
-      if (currentStudent.nv3) document.getElementById('nv3').value = currentStudent.nv3;
-
+    if (result.status === "success") {
+      alert("Xác nhận thông tin thành công!");
+      // Code hiển thị form chọn tổ hợp môn ở đây...
     } else {
-      showMsg(msg, 'rose', res.message || "Không tìm thấy thông tin học sinh!");
+      alert(result.message || "Không tìm thấy thông tin học sinh!");
     }
-  })
-  .catch(err => {
-    btn.disabled = false;
-    btn.innerText = 'XÁC NHẬN THÔNG TIN';
-    showMsg(msg, 'rose', "❌ Lỗi kết nối: " + err.message);
-  });
+  } catch (error) {
+    console.error("Lỗi:", error);
+    alert("Có lỗi kết nối đến máy chủ. Vui lòng thử lại!");
+  }
+}
 }
 
 // 2. Kiểm tra trùng lặp real-time khi chọn nguyện vọng
