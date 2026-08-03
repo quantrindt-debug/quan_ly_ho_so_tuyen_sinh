@@ -219,12 +219,18 @@ function verifyHocSinh() {
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     // Gửi đầy đủ sbd, dob, cccd và đúng action
     body: JSON.stringify({ 
-      action: "checkHocSinhToHop", 
-      sbd: sbd, 
-      dob: dob,
-      cccd: cccd 
-    })
-  })
+      // Đoạn JS trên trang Đăng ký tổ hợp phải có dạng:
+    const payload = {
+      action: "submitDangKyToHop", // 👈 BẮT BỘC PHẢI CÓ DÒNG NÀY VÀ ĐÚNG CHÍNH TẢ
+      sbd: sbdValue,
+      fullName: nameValue,
+      dob: dobValue,
+      nv1: nv1Value,
+      nv2: nv2Value,
+      nv3: nv3Value,
+      // ...
+    };
+      
   .then(res => res.json())
   .then(res => {
     btn.disabled = false;
