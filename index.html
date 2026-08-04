@@ -107,7 +107,16 @@
           </div>
         </div>
       </div>
-
+      <!-- Nút 2: Đăng ký Tổ hợp môn -->
+      <a id="linktracuuTongHop" href="./tracuuTongHop.html"
+         class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 hover:border-amber-500 hover:shadow-lg transition group flex items-center space-x-4">
+        <div class="w-12 h-12 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center text-2xl font-bold flex-shrink-0 group-hover:scale-110 transition">📚</div>
+        <div>
+          <span class="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-bold rounded-md">SAU KHI CÓ THÔNG BÁO MỚI</span>
+          <h2 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition">Tra Cứu xác nhận đăng ký</h2>
+          <p class="text-xs text-slate-500">Tra cứu xác nhận nhập học và xác nhận đăng ký tổ hợp môn học.</p>
+        </div>
+      </a>
       <!-- CỘT 3: KHỐI MÃ QR TÍCH HỢP ĐẸP MẮT -->
       <div class="md:col-span-1 bg-gradient-to-b from-white to-slate-50/80 rounded-2xl p-5 shadow-xl border border-slate-200 text-center space-y-3 flex flex-col justify-between h-full">
         <div>
@@ -217,31 +226,7 @@
         }
       }, 200);
     }
-// Đoạn xử lý khi gửi form xác nhận nhập học
-async function submitFormNhapHoc(formDataPayload) {
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: "POST",
-      // Dùng text/plain để tránh bị trình duyệt gửi yêu cầu OPTIONS (CORS preflight) gây lỗi 404/CORS trên Google Apps Script
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(formDataPayload)
-    });
 
-    const result = await response.json();
-    
-    if (result.status === "success" || result.success === true) {
-      alert("Đăng ký nhập học thành công!");
-      // Xử lý chuyển trang hoặc hiển thị thông báo thành công
-    } else {
-      alert("Lỗi: " + (result.message || "Đăng ký không thành công!"));
-    }
-  } catch (error) {
-    console.error("Lỗi gửi dữ liệu:", error);
-    alert("Lỗi kết nối máy chủ: " + error.message);
-  }
-}
     function formatDateVN(dateStr) {
       if (!dateStr) return "";
       var str = String(dateStr).trim();
