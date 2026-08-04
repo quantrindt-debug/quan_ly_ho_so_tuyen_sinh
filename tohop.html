@@ -15,16 +15,14 @@
       <h2 class="text-xl font-bold uppercase tracking-wide">Trường THPT Nguyễn Duy Trinh</h2>
       <p class="text-sm text-amber-200 mt-1">ĐĂNG KÝ MÔN HỌC LỰA CHỌN VÀ CỤM CHUYÊN ĐỀ LỚP 10</p>
     </div>
-    <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline flex items-center gap-1 transition">
-        🏠 Trang chủ
-      </a>
-    <!-- BƯỚC 1: ĐĂNG NHẬP / XÁC THỰC THÔNG TIN HỌC SINH -->
+
+    <!-- BƯỚC 1: XÁC THỰC THÔNG TIN (ĐĂNG NHẬP) -->
     <div id="stepXacThuc" class="p-6 space-y-4">
       <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 space-y-3">
         <h3 class="font-bold text-amber-900 flex items-center gap-2 text-base">
           <i class="fa-solid fa-user-check"></i> XÁC THỰC THÔNG TIN HỌC SINH
         </h3>
-        <p class="text-xs text-gray-600">Vui lòng nhập chính xác Số CCCD và Ngày sinh để hệ thống tra cứu danh sách trúng tuyển trước khi đăng ký.</p>
+        <p class="text-xs text-gray-600">Nhập chính xác Số CCCD và Ngày sinh để xác thực thông tin trúng tuyển trước khi đăng ký.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
           <div>
@@ -49,10 +47,10 @@
     </div>
 
 
-    <!-- BƯỚC 2: KHUNG ĐĂNG KÝ (ẨN BAN ĐẦU, HIỆN KHI XÁC THỰC THÀNH CÔNG) -->
+    <!-- BƯỚC 2: KHUNG ĐĂNG KÝ MÔN HỌC (HIỆN KHI XÁC THỰC ĐÚNG) -->
     <form id="formDangKy" onsubmit="xuLyDangKy(event)" class="hidden p-6 space-y-5 border-t border-gray-100">
       
-      <!-- Thẻ hiển thị Thông tin Học sinh đã xác thực ở trên cùng -->
+      <!-- Thẻ thông tin học sinh -->
       <div class="bg-amber-50 p-4 rounded-lg border border-amber-300 space-y-2 shadow-sm">
         <div class="flex justify-between items-center border-b border-amber-200 pb-2 mb-2">
           <span class="text-xs font-bold text-amber-900 uppercase flex items-center gap-1.5">
@@ -78,9 +76,7 @@
         </h3>
 
         <div>
-          <label class="block text-xs font-bold text-gray-800 mb-1">
-            Nguyện vọng 1 <span class="text-red-500">*</span>
-          </label>
+          <label class="block text-xs font-bold text-gray-800 mb-1">Nguyện vọng 1 <span class="text-red-500">*</span></label>
           <select id="nv1" required onchange="capNhatPreview('nv1', 'previewNv1')"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-800 outline-none text-xs md:text-sm font-medium">
             <option value="">-- Chọn Nhóm tổ hợp môn --</option>
@@ -95,9 +91,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-800 mb-1">
-            Nguyện vọng 2 <span class="text-gray-400 font-normal">(Dự phòng)</span>
-          </label>
+          <label class="block text-xs font-bold text-gray-800 mb-1">Nguyện vọng 2 <span class="text-gray-400 font-normal">(Dự phòng)</span></label>
           <select id="nv2" onchange="capNhatPreview('nv2', 'previewNv2')"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-800 outline-none text-xs md:text-sm font-medium">
             <option value="">-- Không chọn --</option>
@@ -112,7 +106,7 @@
         </div>
       </div>
 
-      <!-- Thành tích & Upload tệp đính kèm -->
+      <!-- Tải tệp minh chứng & phiếu đăng ký -->
       <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
         <h3 class="font-bold text-amber-900 flex items-center gap-2 text-sm">
           <i class="fa-solid fa-paperclip"></i> THÀNH TÍCH & PHIẾU ĐẮNG KÝ (NẾU CÓ)
@@ -138,7 +132,6 @@
         </div>
       </div>
 
-      <!-- Thông báo kết quả đăng ký -->
       <div id="msgBox" class="hidden p-3 rounded-md text-sm font-medium text-center"></div>
 
       <!-- Nút gửi đăng ký -->
@@ -148,7 +141,6 @@
           <i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ
         </button>
 
-        <!-- Khung hiện các nút xem file sau khi đăng ký thành công -->
         <div id="boxFileUploaded" class="hidden grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
           <a id="btnXemHSG" target="_blank" class="hidden bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-3 rounded text-center text-xs flex justify-center items-center gap-1.5">
             <i class="fa-solid fa-award"></i> Xem Minh Chứng HSG
@@ -176,7 +168,7 @@
 
     let currentHocSinh = null;
 
-    // BƯỚC 1: XÁC THỰC THÔNG TIN
+    // BƯỚC 1: XÁC THỰC THÔNG TIN HỌC SINH VỚI ACTION "checkHocSinhToHop"
     function xacThucHocSinh() {
       const cccd = document.getElementById("loginCCCD").value.trim();
       const dob = document.getElementById("loginDOB").value.trim();
@@ -194,25 +186,24 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tra cứu danh sách...';
       msg.classList.add("hidden");
 
+      // GỬI PAYLOAD VỚI ACTION "checkHocSinhToHop"
       fetch(SCRIPT_URL, {
         method: "POST",
-        body: JSON.stringify({ action: "layThongTinHocSinh", cccd: cccd, dob: dob })
+        body: JSON.stringify({ action: "checkHocSinhToHop", cccd: cccd, dob: dob })
       })
       .then(res => res.json())
       .then(res => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC NHẬN & TIẾP TỤC';
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC & TIẾP TỤC';
 
         if (res.status === "success") {
           currentHocSinh = { cccd: cccd, dob: res.dob, fullName: res.fullName, sbd: res.sbd, school: res.school };
           
-          // Điền thông tin lên thẻ hiển thị
           document.getElementById("txtFullName").innerText = res.fullName;
           document.getElementById("txtSBD").innerText = res.sbd;
           document.getElementById("txtDOB").innerText = res.dob;
           document.getElementById("txtSchool").innerText = res.school || "Không rõ";
 
-          // Ẩn Bước 1, Mở Bước 2
           document.getElementById("stepXacThuc").classList.add("hidden");
           document.getElementById("formDangKy").classList.remove("hidden");
         } else {
@@ -223,14 +214,13 @@
       })
       .catch(() => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC NHẬN & TIẾP TỤC';
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC & TIẾP TỤC';
         msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
         msg.innerText = "❌ Lỗi kết nối hệ thống. Vui lòng thử lại!";
         msg.classList.remove("hidden");
       });
     }
 
-    // Đăng xuất / Quay lại bước 1
     function dangXuat() {
       currentHocSinh = null;
       document.getElementById("formDangKy").classList.add("hidden");
@@ -258,7 +248,6 @@
       });
     }
 
-    // BƯỚC 2: XỬ LÝ GỬI FORM ĐĂNG KÝ
     async function xuLyDangKy(e) {
       e.preventDefault();
       if (!currentHocSinh) return;
@@ -305,13 +294,13 @@
           const boxFile = document.getElementById("boxFileUploaded");
           boxFile.classList.remove("hidden");
 
-          if (data.data.urlHSG) {
+          if (data.data && data.data.urlHSG) {
             const btnHSG = document.getElementById("btnXemHSG");
             btnHSG.href = data.data.urlHSG;
             btnHSG.classList.remove("hidden");
           }
 
-          if (data.data.urlPhieuDK) {
+          if (data.data && data.data.urlPhieuDK) {
             const btnPDK = document.getElementById("btnXemPhieuDK");
             btnPDK.href = data.data.urlPhieuDK;
             btnPDK.classList.remove("hidden");
