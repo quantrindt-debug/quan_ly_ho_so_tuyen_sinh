@@ -196,7 +196,7 @@
 
       fetch(SCRIPT_URL, {
         method: "POST",
-        body: JSON.stringify({ action: "layThongTinHocSinh", cccd: cccd, dob: dob })
+        body: JSON.stringify({ action: "checkHocSinhToHop", cccd: cccd, dob: dob })
       })
       .then(res => res.json())
       .then(res => {
