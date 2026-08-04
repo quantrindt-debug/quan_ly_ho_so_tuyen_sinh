@@ -89,7 +89,7 @@
       </div>
 
       <!-- BƯỚC 2: ĐIỀN NGUYỆN VỌNG TỔ HỢP -->
-      <form id="formToHap" onsubmit="handleToHapSubmit(event)" class="hidden space-y-5 pt-1">
+      <form id="formToHop" onsubmit="handleToHopSubmit(event)" class="hidden space-y-5 pt-1">
         
         <!-- Thẻ hiển thị thông tin học sinh sau xác thực -->
         <div class="p-4 bg-amber-50/60 border border-amber-200/80 rounded-2xl text-xs space-y-1.5">
@@ -176,7 +176,7 @@
           </div>
         </div>
 
-        <button type="submit" id="btnSubmitToHap" class="w-full bg-amber-800 text-white py-3.5 rounded-xl font-bold hover:bg-amber-900 active:scale-[0.99] transition shadow-md shadow-amber-900/20 text-sm tracking-wide mt-2">
+        <button type="submit" id="btnSubmitToHop" class="w-full bg-amber-800 text-white py-3.5 rounded-xl font-bold hover:bg-amber-900 active:scale-[0.99] transition shadow-md shadow-amber-900/20 text-sm tracking-wide mt-2">
           GỬI ĐĂNG KÝ TỔ HỢP
         </button>
 
@@ -270,7 +270,7 @@
           document.getElementById('lblSchool').innerText = currentStudent.school || "THCS";
 
           document.getElementById('stepVerify').classList.add('hidden');
-          document.getElementById('formToHap').classList.remove('hidden');
+          document.getElementById('formToHop').classList.remove('hidden');
         } else {
           showMsg(msg, 'rose', '❌ ' + (result.message || 'Không tìm thấy thông tin học sinh trong danh sách trúng tuyển!'));
         }
@@ -319,11 +319,11 @@
     }
 
     // 4. Gửi đăng ký tổ hợp
-    async function handleToHapSubmit(e) {
+    async function handleToHopSubmit(e) {
       e.preventDefault();
       if (!validateSelections()) return;
 
-      const btn = document.getElementById('btnSubmitToHap');
+      const btn = document.getElementById('btnSubmitToHop');
       const msg = document.getElementById('submitMsg');
       const fileInput = document.getElementById('hsgFile');
 
@@ -334,7 +334,7 @@
       const fileData = await getFileData(fileInput);
 
       const payload = {
-        action: "submitDangKyToHap",
+        action: "submitDangKyToHop",
         sbd: currentStudent.sbd,
         fullName: currentStudent.fullName,
         dob: currentStudent.dob,
@@ -371,7 +371,7 @@
     }
 
     function resetFormStep() {
-      document.getElementById('formToHap').classList.add('hidden');
+      document.getElementById('formToHop').classList.add('hidden');
       document.getElementById('stepVerify').classList.remove('hidden');
       document.getElementById('verifyMsg').classList.add('hidden');
       document.getElementById('vSbd').value = '';
