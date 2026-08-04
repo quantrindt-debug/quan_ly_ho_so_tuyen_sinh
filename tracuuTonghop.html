@@ -153,17 +153,22 @@
         msgErr.classList.remove('hidden');
       }
     }
+function renderResult(data) {
+  
+    const nh = data.nhapHoc;
+    const th = data.toHop;
+  
+    // Lấy thông tin họ tên & SBD ưu tiên từ Nhập học, nếu không có thì lấy từ Tổ hợp
+    const fullName = (nh && nh.fullName) ? nh.fullName : ((th && th.fullName) ? th.fullName : "Học sinh");
+    const sbd = (nh && nh.sbd) ? nh.sbd : ((th && th.sbd) ? th.sbd : "--");
+    const dob = (nh && nh.dob) ? nh.dob : ((th && th.dob) ? th.dob : document.getElementById('tDob').value);
+  
+    // Cập nhật thẻ header
+    document.getElementById('resName').innerText = fullName;
+    document.getElementById('resSbd').innerText = sbd;
+    document.getElementById('resDob').innerText = dob;
 
-    function renderResult(data) {
-      const nh = data.nhapHoc;
-      const th = data.toHop;
-
-      // Cập nhật thẻ header chung
-      const sample = nh || th;
-      document.getElementById('resName').innerText = sample.fullName || "Học sinh";
-      document.getElementById('resSbd').innerText = sample.sbd || "--";
-      document.getElementById('resDob').innerText = sample.dob || document.getElementById('tDob').value;
-
+  // ... (Giữ nguyên đoạn code render Khung 1 và Khung 2 bên dưới)
       // 1. Render Khung Nhập Học
       const boxNH = document.getElementById('boxNhapHoc');
       if (nh) {
