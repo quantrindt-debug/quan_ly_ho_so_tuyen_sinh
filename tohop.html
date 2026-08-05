@@ -16,13 +16,13 @@
       <p class="text-sm text-amber-200 mt-1">ĐĂNG KÝ MÔN HỌC LỰA CHỌN VÀ CỤM CHUYÊN ĐỀ LỚP 10</p>
     </div>
 
-    <!-- BƯỚC 1: XÁC THỰC THÔNG TIN (ĐĂNG NHẬP) -->
+    <!-- BƯỚC 1: XÁC THỰC THÔNG TIN DANG SACH NHAP HOC -->
     <div id="stepXacThuc" class="p-6 space-y-4">
       <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 space-y-3">
         <h3 class="font-bold text-amber-900 flex items-center gap-2 text-base">
-          <i class="fa-solid fa-user-check"></i> XÁC THỰC THÔNG TIN HỌC SINH
+          <i class="fa-solid fa-user-check"></i> XÁC THỰC DỮ LIỆU NHẬP HỌC
         </h3>
-        <p class="text-xs text-gray-600">Nhập chính xác Số CCCD và Ngày sinh để xác thực thông tin trúng tuyển trước khi đăng ký.</p>
+        <p class="text-xs text-gray-600">Nhập Số CCCD và Ngày sinh đã dùng ở **Bước 1 Đăng ký nhập học** để mở form Đăng ký tổ hợp.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
           <div>
@@ -39,7 +39,7 @@
 
         <button type="button" onclick="xacThucHocSinh()" id="btnXacThuc"
                 class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-2.5 px-4 rounded-lg transition duration-200 flex justify-center items-center gap-2 mt-2 text-sm">
-          <i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC & TIẾP TỤC
+          <i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC NHẬP HỌC
         </button>
       </div>
 
@@ -47,14 +47,14 @@
     </div>
 
 
-    <!-- BƯỚC 2: KHUNG ĐĂNG KÝ MÔN HỌC (HIỆN KHI XÁC THỰC ĐÚNG) -->
+    <!-- BƯỚC 2: KHUNG ĐĂNG KÝ TỔ HỢP MÔN -->
     <form id="formDangKy" onsubmit="xuLyDangKy(event)" class="hidden p-6 space-y-5 border-t border-gray-100">
       
       <!-- Thẻ thông tin học sinh -->
       <div class="bg-amber-50 p-4 rounded-lg border border-amber-300 space-y-2 shadow-sm">
         <div class="flex justify-between items-center border-b border-amber-200 pb-2 mb-2">
           <span class="text-xs font-bold text-amber-900 uppercase flex items-center gap-1.5">
-            <i class="fa-solid fa-circle-check text-green-600"></i> Học sinh trúng tuyển
+            <i class="fa-solid fa-circle-check text-green-600"></i> Đã xác thực nhập học thành công
           </span>
           <button type="button" onclick="dangXuat()" class="text-xs text-amber-800 hover:underline flex items-center gap-1 font-semibold">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Đổi tài khoản
@@ -66,10 +66,9 @@
           <p><b>📅 Ngày sinh:</b> <span id="txtDOB" class="font-semibold">--</span></p>
         </div>
         <p class="text-xs"><b>👤 Họ và tên:</b> <span id="txtFullName" class="text-amber-900 font-bold text-sm uppercase">--</span></p>
-        <p class="text-xs"><b>🏫 THCS tốt nghiệp:</b> <span id="txtSchool" class="text-gray-700">--</span></p>
       </div>
 
-      <!-- Chọn Nguyện vọng (Giữ nguyên Lớp dự kiến) -->
+      <!-- Chọn Nguyện vọng tổ hợp môn -->
       <div class="space-y-4">
         <h3 class="font-bold text-amber-900 flex items-center gap-2 text-sm">
           <i class="fa-solid fa-list-check"></i> CHỌN NGUYỆN VỌNG TỔ HỢP MÔN
@@ -106,7 +105,7 @@
         </div>
       </div>
 
-      <!-- Tải tệp minh chứng & phiếu đăng ký -->
+      <!-- Đính kèm file -->
       <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
         <h3 class="font-bold text-amber-900 flex items-center gap-2 text-sm">
           <i class="fa-solid fa-paperclip"></i> THÀNH TÍCH & PHIẾU ĐẮNG KÝ (NẾU CÓ)
@@ -138,7 +137,7 @@
       <div class="space-y-2">
         <button type="submit" id="btnSubmit" 
                 class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-4 rounded-lg transition duration-200 flex justify-center items-center gap-2">
-          <i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ
+          <i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ TỔ HỢP
         </button>
 
         <div id="boxFileUploaded" class="hidden grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
@@ -155,7 +154,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec"; // Thay URL Web App của anh
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXIPlXl3ha1PAG-jQpAdG_1.../exec"; // Thay URL Web App của anh
 
     const TO_HOP_INFO = {
       "Nhóm 1": { mon: "Lí, Hóa, Sinh, Tin", cd: "Toán, Lí, Hóa", thi: "Lí, Hoá", lop: "4 lớp (A, A1, A2, A3, A4)" },
@@ -168,7 +167,6 @@
 
     let currentHocSinh = null;
 
-    // BƯỚC 1: XÁC THỰC THÔNG TIN HỌC SINH VỚI ACTION "checkHocSinhToHop"
     function xacThucHocSinh() {
       const cccd = document.getElementById("loginCCCD").value.trim();
       const dob = document.getElementById("loginDOB").value.trim();
@@ -183,10 +181,9 @@
       }
 
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tra cứu danh sách...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đối chiếu dữ liệu nhập học...';
       msg.classList.add("hidden");
 
-      // GỬI PAYLOAD VỚI ACTION "checkHocSinhToHop"
       fetch(SCRIPT_URL, {
         method: "POST",
         body: JSON.stringify({ action: "checkHocSinhToHop", cccd: cccd, dob: dob })
@@ -194,15 +191,14 @@
       .then(res => res.json())
       .then(res => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC & TIẾP TỤC';
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC NHẬP HỌC';
 
         if (res.status === "success") {
-          currentHocSinh = { cccd: cccd, dob: res.dob, fullName: res.fullName, sbd: res.sbd, school: res.school };
+          currentHocSinh = { cccd: cccd, dob: res.dob, fullName: res.fullName, sbd: res.sbd };
           
           document.getElementById("txtFullName").innerText = res.fullName;
           document.getElementById("txtSBD").innerText = res.sbd;
           document.getElementById("txtDOB").innerText = res.dob;
-          document.getElementById("txtSchool").innerText = res.school || "Không rõ";
 
           document.getElementById("stepXacThuc").classList.add("hidden");
           document.getElementById("formDangKy").classList.remove("hidden");
@@ -214,7 +210,7 @@
       })
       .catch(() => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC & TIẾP TỤC';
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC NHẬP HỌC';
         msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
         msg.innerText = "❌ Lỗi kết nối hệ thống. Vui lòng thử lại!";
         msg.classList.remove("hidden");
@@ -284,7 +280,7 @@
       .then(res => res.json())
       .then(data => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ';
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ TỔ HỢP';
         msg.classList.remove("hidden");
 
         if (data.status === "success") {
@@ -312,7 +308,7 @@
       })
       .catch(() => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ';
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ TỔ HỢP';
         msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
         msg.innerHTML = "❌ Kết nối thất bại. Vui lòng thử lại!";
         msg.classList.remove("hidden");
