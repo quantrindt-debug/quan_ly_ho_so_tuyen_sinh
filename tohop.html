@@ -15,16 +15,20 @@
       <h2 class="text-xl font-bold uppercase tracking-wide">Trường THPT Nguyễn Duy Trinh</h2>
       <p class="text-sm text-amber-200 mt-1">ĐĂNG KÝ MÔN HỌC LỰA CHỌN VÀ CỤM CHUYÊN ĐỀ LỚP 10</p>
     </div>
-    <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline flex items-center gap-1 transition">
+    
+    <div class="p-4 border-b bg-gray-50">
+      <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline inline-flex items-center gap-1 text-sm transition">
         🏠 Trang chủ
       </a>
+    </div>
+
     <!-- BƯỚC 1: XÁC THỰC THÔNG TIN DANG SACH NHAP HOC -->
     <div id="stepXacThuc" class="p-6 space-y-4">
       <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 space-y-3">
         <h3 class="font-bold text-amber-900 flex items-center gap-2 text-base">
           <i class="fa-solid fa-user-check"></i> XÁC THỰC DỮ LIỆU NHẬP HỌC
         </h3>
-        <p class="text-xs text-gray-600">Nhập Số CCCD và Ngày sinh đã dùng ở **Bước 1 Đăng ký nhập học** để mở form Đăng ký tổ hợp.</p>
+        <p class="text-xs text-gray-600">Nhập Số CCCD và Ngày sinh đã dùng ở <b>Bước 1 Đăng ký nhập học</b> để mở form Đăng ký tổ hợp.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
           <div>
@@ -156,7 +160,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec"; // Thay URL Web App của anh
+    // URL Web App Google Apps Script của anh
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec";
 
     const TO_HOP_INFO = {
       "Nhóm 1": { mon: "Lí, Hóa, Sinh, Tin", cd: "Toán, Lí, Hóa", thi: "Lí, Hoá", lop: "4 lớp (A, A1, A2, A3, A4)" },
@@ -169,6 +174,7 @@
 
     let currentHocSinh = null;
 
+    // 1. HÀM XÁC THỰC HỌC SINH (ĐÃ ĐỔI SANG DÙNG POST TÍCH HỢP TEXT/PLAIN TRÁNH LỖI 404 & CORS)
     function xacThucHocSinh() {
       const cccd = document.getElementById("loginCCCD").value.trim();
       const dob = document.getElementById("loginDOB").value.trim();
@@ -186,9 +192,16 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đối chiếu dữ liệu nhập học...';
       msg.classList.add("hidden");
 
+      const payload = {
+        action: "checkHocSinhToHop",
+        cccd: cccd,
+        dob: dob
+      };
+
       fetch(SCRIPT_URL, {
         method: "POST",
-        body: JSON.stringify({ action: "checkHocSinhToHop", cccd: cccd, dob: dob })
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
       })
       .then(res => res.json())
       .then(res => {
@@ -210,7 +223,8 @@
           msg.classList.remove("hidden");
         }
       })
-      .catch(() => {
+      .catch(err => {
+        console.error("Lỗi xác thực:", err);
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC NHẬP HỌC';
         msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
@@ -246,6 +260,7 @@
       });
     }
 
+    // 2. HÀM XỬ LÝ ĐĂNG KÝ TỔ HỢP (ĐÃ THÊM HEADER TEXT/PLAIN CHỐNG LỖI CORS)
     async function xuLyDangKy(e) {
       e.preventDefault();
       if (!currentHocSinh) return;
@@ -277,6 +292,7 @@
 
       fetch(SCRIPT_URL, {
         method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       })
       .then(res => res.json())
@@ -308,7 +324,8 @@
           msg.innerHTML = "❌ " + data.message;
         }
       })
-      .catch(() => {
+      .catch(err => {
+        console.error("Lỗi đăng ký:", err);
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ TỔ HỢP';
         msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
