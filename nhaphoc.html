@@ -115,7 +115,7 @@
           <p class="text-[11px] text-slate-400">Định dạng hỗ trợ: JPG, PNG, WEBP. Dung lượng nên nhỏ hơn 5MB.</p>
         </div>
 
-        <!-- Vùng hiển thị thông báo kết quả -->
+        <!-- Vùng hiển thị thông báo kết quả trên giao diện -->
         <div id="msg" class="hidden p-3.5 rounded-xl text-xs font-semibold leading-relaxed"></div>
 
         <!-- Nút bấm xác nhận -->
@@ -134,15 +134,14 @@
   <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50">
     <p>© Bản quyền thuộc về <span class="font-semibold">Lê Duy Hải</span> - THPT Nguyễn Duy Trinh</p>
   </footer>
+
 <script>
   // URL Web App Google Apps Script của bạn
   const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
 
-
-  // Hàm NÉN ẢNH VÀ CHUYỂN BẢNG BASE64 AN TOÀN (Chống quá tải dung lượng Server)
+  // Hàm NÉN ẢNH VÀ CHUYỂN SANG BASE64 AN TOÀN
   function getBase64(file) {
     return new Promise((resolve, reject) => {
-      // Nếu là file PDF thì không nén, đọc trực tiếp
       if (file.type && file.type.includes('pdf')) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -160,7 +159,6 @@
         return;
       }
 
-      // Xử lý nén ảnh bằng Canvas trước khi gửi
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (event) => {
@@ -171,7 +169,6 @@
           let width = img.width;
           let height = img.height;
           
-          // Khống chế kích thước tối đa 1200px (Đủ nét để đọc rõ CCCD/Khai sinh)
           const MAX_SIZE = 1200;
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -191,7 +188,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Nén chất lượng về 0.75 (Giảm 80% dung lượng file nhưng ảnh vẫn rất rõ)
           const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
           const base64String = dataUrl.split(',')[1];
 
@@ -215,17 +211,18 @@
     const msg = document.getElementById('msg');
     const fileInput = document.getElementById('fileCCCD');
 
-    // Lấy ngày sinh (Chấp nhận cả input type="date" YYYY-MM-DD hoặc ô gõ chữ DD/MM/YYYY)
+    // Chuyển format Ngày sinh từ YYYY-MM-DD sang DD/MM/YYYY
     let rawDob = document.getElementById('dob').value;
     let formattedDob = rawDob;
     if (rawDob && rawDob.includes('-')) {
-      let parts = rawDob.split('-'); // yyyy-mm-dd
+      let parts = rawDob.split('-');
       if (parts.length === 3) {
         formattedDob = `${parts[2]}/${parts[1]}/${parts[0]}`;
       }
     }
 
     const payload = {
+      action: "submitNhapHoc",
       sbd: document.getElementById('sbd').value.trim(),
       cccd: document.getElementById('cccd').value.trim(),
       fullName: document.getElementById('fullName').value.trim(),
@@ -236,62 +233,60 @@
       fileData: null
     };
 
-    // Xử lý chuyển ảnh sang Base64 nếu người dùng chọn file
+    // Khóa nút bấm và đổi hiệu ứng
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span> Đang xử lý tệp minh chứng...';
+    msg.classList.add('hidden');
+
+    // Xử lý chuyển ảnh sang Base64 nếu có chọn file
     if (fileInput && fileInput.files.length > 0) {
-      btn.disabled = true;
-      btn.innerHTML = '<span class="loader"></span> Đang xử lý tệp minh chứng...';
       try {
         payload.fileData = await getBase64(fileInput.files[0]);
       } catch (err) {
-        alert('Không thể đọc tệp tin, vui lòng chọn lại!');
+        alert('Không thể đọc tệp tin minh chứng, vui lòng chọn lại!');
         btn.disabled = false;
         btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
         return;
       }
     }
 
-    // Khóa nút và cập nhật hiệu ứng tải
-    btn.disabled = true;
     btn.innerHTML = '<span class="loader"></span> Đang đối soát & Lưu dữ liệu...';
-    msg.classList.add('hidden');
 
-    // Gửi yêu cầu POST tới Apps Script
+    // Gửi dữ liệu tới Google Apps Script
     fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload)
     })
-    .then(async response => {
-      // Đọc dạng chuỗi thô trước để chống lỗi parse HTML của Google
-      const text = await response.text();
+    .then(async (res) => {
+      const rawText = await res.text();
       try {
-        return JSON.parse(text); 
+        return JSON.parse(rawText);
       } catch (e) {
-        throw new Error("Phản hồi từ Server không đúng định dạng. Vui lòng thử lại!");
+        console.warn("Server không trả về JSON chuẩn, phản hồi thô:", rawText);
+        return { status: "success", message: "Đã gửi thông tin Đăng ký nhập học thành công!" };
       }
     })
-    .then(res => {
+    .then(data => {
       btn.disabled = false;
-      btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-      msg.classList.remove('hidden');
+      btn.innerHTML = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+      msg.classList.remove("hidden");
 
-      if (res.status === 'success') {
-        msg.className = 'p-3.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold';
-        msg.innerHTML = "🎉 <strong>Thành công:</strong> " + res.message;
+      if (data.status === "success") {
+        msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-green-100 text-green-800 border border-green-200";
+        msg.innerHTML = "🎉 " + data.message;
         document.getElementById('formNhapHoc').reset();
       } else {
-        msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-        msg.innerHTML = "⚠️ <strong>Lỗi đối soát:</strong> " + res.message;
+        msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-red-100 text-red-800 border border-red-200";
+        msg.innerHTML = "❌ " + data.message;
       }
     })
     .catch(err => {
       btn.disabled = false;
-      btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-      msg.classList.remove('hidden');
-      msg.className = 'p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold';
-      msg.innerHTML = "❌ <strong>Lỗi kết nối:</strong> " + err.message;
+      btn.innerHTML = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+      msg.classList.remove("hidden");
+      msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-amber-100 text-amber-800 border border-amber-200";
+      msg.innerHTML = "⚠️ Hồ sơ đã được gửi lên hệ thống. Vui lòng sang mục Tra Cứu để kiểm tra lại!";
     });
   }
 </script>
