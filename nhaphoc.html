@@ -220,86 +220,112 @@
     });
   }
 
-  // Hàm gửi dữ liệu xác nhận nhập học
-  async function submitFormNhapHoc() {
-    const btn = document.getElementById('btnSubmit');
-    const msg = document.getElementById('msg');
-    const fileInput = document.getElementById('fileCCCD');
+ // Hàm kiểm tra tính hợp lệ thực tế của Ngày Tháng Năm (Logic kiểm tra lịch thực tế)
+function isValidDateStr(dateStr) {
+  // 1. Đúng định dạng dd/mm/yyyy
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return false;
 
-    const formattedDob = document.getElementById('dob').value.trim();
+  const parts = dateStr.split("/");
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const year = parseInt(parts[2], 10);
 
-    // Kiểm tra định dạng ngày sinh trước khi gửi
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(formattedDob)) {
-      alert("Vui lòng nhập Ngày sinh đúng dạng DD/MM/YYYY (Ví dụ: 15/08/2008)!");
-      document.getElementById('dob').focus();
+  // 2. Kiểm tra khoảng Tháng (1 - 12) và Năm hợp lý cho học sinh lớp 10 (VD: từ 2000 đến năm hiện tại)
+  const currentYear = new Date().getFullYear();
+  if (month < 1 || month > 12) return false;
+  if (year < 2000 || year > currentYear) return false;
+
+  // 3. Kiểm tra số ngày hợp lệ theo từng tháng (bao gồm cả năm nhuận)
+  const monthLength = [31, (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (day < 1 || day > monthLength[month - 1]) return false;
+
+  return true;
+}
+
+// Hàm gửi dữ liệu xác nhận nhập học (Đã thêm bắt lỗi ngày sinh sai)
+async function submitFormNhapHoc() {
+  const btn = document.getElementById('btnSubmit');
+  const msg = document.getElementById('msg');
+  const fileInput = document.getElementById('fileCCCD');
+  const dobInput = document.getElementById('dob');
+
+  const formattedDob = dobInput.value.trim();
+
+  // Bắt lỗi nếu học sinh nhập sai định dạng hoặc ngày không có thực trên lịch
+  if (!isValidDateStr(formattedDob)) {
+    alert("❌ Ngày tháng năm sinh không hợp lệ!\nVui lòng kiểm tra lại (Ví dụ đúng: 15/08/2008).");
+    dobInput.focus();
+    dobInput.classList.add('border-red-500', 'bg-red-50'); // Bôi đỏ ô nhập bị lỗi
+    return;
+  } else {
+    dobInput.classList.remove('border-red-500', 'bg-red-50');
+  }
+
+  const payload = {
+    action: "submitNhapHoc",
+    sbd: document.getElementById('sbd').value.trim(),
+    cccd: document.getElementById('cccd').value.trim(),
+    fullName: document.getElementById('fullName').value.trim(),
+    dob: formattedDob,
+    schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    fileData: null
+  };
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span> Đang xử lý tệp minh chứng...';
+  msg.classList.add('hidden');
+
+  if (fileInput && fileInput.files.length > 0) {
+    try {
+      payload.fileData = await getBase64(fileInput.files[0]);
+    } catch (err) {
+      alert('Không thể đọc tệp tin minh chứng, vui lòng chọn lại!');
+      btn.disabled = false;
+      btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
       return;
     }
-
-    const payload = {
-      action: "submitNhapHoc",
-      sbd: document.getElementById('sbd').value.trim(),
-      cccd: document.getElementById('cccd').value.trim(),
-      fullName: document.getElementById('fullName').value.trim(),
-      dob: formattedDob,
-      schoolTHCS: document.getElementById('schoolTHCS').value.trim(),
-      phone: document.getElementById('phone').value.trim(),
-      address: document.getElementById('address').value.trim(),
-      fileData: null
-    };
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loader"></span> Đang xử lý tệp minh chứng...';
-    msg.classList.add('hidden');
-
-    if (fileInput && fileInput.files.length > 0) {
-      try {
-        payload.fileData = await getBase64(fileInput.files[0]);
-      } catch (err) {
-        alert('Không thể đọc tệp tin minh chứng, vui lòng chọn lại!');
-        btn.disabled = false;
-        btn.innerText = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-        return;
-      }
-    }
-
-    btn.innerHTML = '<span class="loader"></span> Đang đối soát & Lưu dữ liệu...';
-
-    fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    })
-    .then(async (res) => {
-      const rawText = await res.text();
-      try {
-        return JSON.parse(rawText);
-      } catch (e) {
-        console.warn("Server không trả về JSON chuẩn, phản hồi thô:", rawText);
-        return { status: "success", message: "Đã gửi thông tin Đăng ký nhập học thành công!" };
-      }
-    })
-    .then(data => {
-      btn.disabled = false;
-      btn.innerHTML = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-      msg.classList.remove("hidden");
-
-      if (data.status === "success") {
-        msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-green-100 text-green-800 border border-green-200";
-        msg.innerHTML = "🎉 " + data.message;
-        document.getElementById('formNhapHoc').reset();
-      } else {
-        msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-red-100 text-red-800 border border-red-200";
-        msg.innerHTML = "❌ " + data.message;
-      }
-    })
-    .catch(err => {
-      btn.disabled = false;
-      btn.innerHTML = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
-      msg.classList.remove("hidden");
-      msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-amber-100 text-amber-800 border border-amber-200";
-      msg.innerHTML = "⚠️ Hồ sơ đã được gửi lên hệ thống. Vui lòng sang mục Tra Cứu để kiểm tra lại!";
-    });
   }
+
+  btn.innerHTML = '<span class="loader"></span> Đang đối soát & Lưu dữ liệu...';
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(async (res) => {
+    const rawText = await res.text();
+    try {
+      return JSON.parse(rawText);
+    } catch (e) {
+      console.warn("Server không trả về JSON chuẩn, phản hồi thô:", rawText);
+      return { status: "success", message: "Đã gửi thông tin Đăng ký nhập học thành công!" };
+    }
+  })
+  .then(data => {
+    btn.disabled = false;
+    btn.innerHTML = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+    msg.classList.remove("hidden");
+
+    if (data.status === "success") {
+      msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-green-100 text-green-800 border border-green-200";
+      msg.innerHTML = "🎉 " + data.message;
+      document.getElementById('formNhapHoc').reset();
+    } else {
+      msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-red-100 text-red-800 border border-red-200";
+      msg.innerHTML = "❌ " + data.message;
+    }
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btn.innerHTML = 'XÁC NHẬN NHẬP HỌC TRỰC TUYẾN';
+    msg.classList.remove("hidden");
+    msg.className = "p-3.5 rounded-xl text-xs font-semibold leading-relaxed bg-amber-100 text-amber-800 border border-amber-200";
+    msg.innerHTML = "⚠️ Hồ sơ đã được gửi lên hệ thống. Vui lòng sang mục Tra Cứu để kiểm tra lại!";
+  });
+}
 </script>
 </body>
 </html>
