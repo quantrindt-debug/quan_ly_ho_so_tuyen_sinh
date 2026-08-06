@@ -3,290 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cổng Thông Tin Tuyển Sinh Lớp 10 - THPT Nguyễn Duy Trinh</title>
+  <title>Hệ Thống Quản Lý Giáo Dục</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
-  <!-- Thư viện tạo Mã QR -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .font-school { font-family: 'Merriweather', serif; }
+    .desktop-bg {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920') no-repeat center center fixed;
+      background-size: cover;
+    }
     .loader {
-      border: 2.5px solid #e2e8f0;
+      border: 3px solid #f3f3f3;
       border-radius: 50%;
-      border-top: 2.5px solid #ffffff;
-      width: 16px;
-      height: 16px;
+      border-top: 3px solid #0284c7;
+      width: 20px;
+      height: 20px;
       animation: spin 0.8s linear infinite;
       display: inline-block;
-      margin-right: 6px;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-200 min-h-screen flex flex-col justify-between">
+<body class="desktop-bg h-screen w-screen overflow-hidden font-sans select-none relative">
 
-  <!-- Header Banner -->
-  <header class="bg-gradient-to-r from-blue-950 via-indigo-900 to-blue-900 text-white py-8 px-4 shadow-xl border-b-4 border-amber-400 relative overflow-hidden">
-    <div class="max-w-4xl mx-auto text-center space-y-2 relative z-10">
-      <h3 class="text-xs md:text-sm font-bold tracking-widest uppercase text-blue-200/90">
-        <span class="info-cq-chu-quan">SỞ GIÁO DỤC VÀ ĐÀO TẠO NGHỆ AN</span>
-      </h3>
-      <div class="text-2xl md:text-4xl font-school font-bold tracking-wide uppercase text-amber-300 drop-shadow-md">
-        <span class="info-ten-truong">TRƯỜNG THPT NGUYỄN DUY TRINH</span>
-      </div>
-      <div class="w-20 h-0.5 bg-amber-400/80 mx-auto my-2 rounded-full"></div>
-      <p class="text-xs md:text-base text-blue-100 font-extrabold uppercase tracking-wider">
-        CỔNG THÔNG TIN TUYỂN SINH LỚP 10 (<span class="info-nam-hoc">2026-2027</span>)
-      </p>
-    </div>
-  </header>
-
-  <main class="max-w-4xl mx-auto p-4 md:p-6 space-y-6 w-full my-auto">
-
-    <!-- Nút điều hướng nhanh -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      
-      <!-- Nút 1: Đăng ký Nhập học -->
-      <a id="linkNhapHoc" href="./nhaphoc.html"
-         class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 hover:border-blue-600 hover:shadow-lg transition group flex items-center space-x-4">
-        <div class="w-12 h-12 bg-blue-50 text-blue-800 rounded-xl flex items-center justify-center text-2xl font-bold flex-shrink-0 group-hover:scale-110 transition">📝</div>
-        <div>
-          <span class="px-2 py-0.5 bg-blue-100 text-blue-900 text-[10px] font-bold rounded-md">ĐỢT 1</span>
-          <h2 class="text-base font-bold text-slate-800 group-hover:text-blue-900 transition">Xác Nhận Nhập Học Trực Tuyến</h2>
-          <p class="text-xs text-slate-500">Thí sinh trúng tuyển đợt 1 cập nhật thông tin từ 8h00 ngày 30/7/2026 đến 11h00 ngày 03/8/2026).</p>
-        </div>
-      </a>
-
-      <!-- Nút 2: Đăng ký Tổ hợp môn -->
-      <a id="linkToHop" href="./tohop.html"
-         class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 hover:border-amber-500 hover:shadow-lg transition group flex items-center space-x-4">
-        <div class="w-12 h-12 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center text-2xl font-bold flex-shrink-0 group-hover:scale-110 transition">📚</div>
-        <div>
-          <span class="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-bold rounded-md">SAU KHI CÓ THÔNG BÁO MỚI</span>
-          <h2 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition">Đăng Ký Tổ Hợp Môn Học</h2>
-          <p class="text-xs text-slate-500">Đăng ký nguyện vọng lựa chọn tổ hợp môn học sau khi tọa đàm tư vấn trực tiếp tại trường THPT Nguyễn Duy Trinh.</p>
-        </div>
-      </a>
-
-    </div>
-
-    <!-- KHU VỰC TRA CỨU SONG SONG (CỘT TRÁI: SEARCH / CỘT PHẢI: QR CODE) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-      
-      <!-- CỘT 1 & 2: Khối Tra cứu kết quả Trúng tuyển -->
-      <div class="md:col-span-2 bg-white rounded-2xl shadow-xl p-5 md:p-6 border border-slate-200/80 space-y-4">
-        <h2 class="text-base font-bold text-blue-950 flex items-center gap-2 border-b pb-3">
-          <span>🔍</span> Tra Cứu Kết Quả Trúng Tuyển
-        </h2>
-        
-        <div class="flex flex-col sm:flex-row gap-2.5">
-          <input type="text" id="searchInput" onkeypress="if(event.key === 'Enter') handleSearch()" placeholder="Nhập Số báo danh hoặc Họ tên..." 
-                 class="flex-grow px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
-          <button onclick="handleSearch()" id="btnSearch" 
-                  class="bg-blue-900 text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-blue-800 active:scale-95 transition shadow-md shadow-blue-900/20 flex items-center justify-center min-w-[110px]">
-            <span id="btnSearchText">TRA CỨU</span>
-          </button>
-        </div>
-
-        <div id="searchResults" class="hidden space-y-3 pt-1">
-          <div id="searchMessage" class="text-xs text-slate-600 font-semibold"></div>
-          <div class="overflow-x-auto rounded-xl border border-slate-200">
-            <table class="w-full text-xs text-left">
-              <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
-                <tr>
-                  <th class="p-2.5">SBD</th>
-                  <th class="p-2.5">Họ và Tên</th>
-                  <th class="p-2.5">Ngày sinh</th>
-                  <th class="p-2.5 text-center">ĐXT</th>
-                  <th class="p-2.5 text-center">Trạng thái</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody" class="divide-y divide-slate-100 bg-white"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <!-- Nút 2: Đăng ký Tổ hợp môn -->
-      <a id="linktracuuTongHop" href="./tracuuTongHop.html"
-         class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 hover:border-amber-500 hover:shadow-lg transition group flex items-center space-x-4">
-        <div class="w-12 h-12 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center text-2xl font-bold flex-shrink-0 group-hover:scale-110 transition">📚</div>
-        <div>
-          <span class="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-bold rounded-md">SAU KHI CÓ THÔNG BÁO MỚI</span>
-          <h2 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition">Tra Cứu xác nhận đăng ký</h2>
-          <p class="text-xs text-slate-500">Tra cứu xác nhận nhập học và xác nhận đăng ký tổ hợp môn học.</p>
-        </div>
-      </a>
-      <!-- CỘT 3: KHỐI MÃ QR TÍCH HỢP ĐẸP MẮT -->
-      <div class="md:col-span-1 bg-gradient-to-b from-white to-slate-50/80 rounded-2xl p-5 shadow-xl border border-slate-200 text-center space-y-3 flex flex-col justify-between h-full">
-        <div>
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 text-indigo-900 text-[10px] font-bold rounded-full uppercase tracking-wider mb-2">
-            <span>📱</span> Quét Mã Tra Cứu Hồ Sơ
-          </div>
-          <h3 class="text-xs font-extrabold text-slate-800 uppercase tracking-tight">
-            XÁC THỰC XÉT TUYỂN VÀO 10
-          </h3>
-        </div>
-
-        <!-- VÙNG MÃ QR -->
-        <div class="my-auto py-2">
-          <div class="bg-white p-3 rounded-2xl border-2 border-indigo-100 inline-block shadow-md">
-            <div id="indexQrcode" class="flex justify-center"></div>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
-            Dùng Camera điện thoại hoặc Zalo để quét xem hồ sơ chi tiết
-          </p>
-
-          <!-- NÚT TẢI ẢNH QR -->
-          <button type="button" onclick="downloadIndexQR()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 active:scale-95">
-            <span>📥</span> Tải ảnh QR về máy
-          </button>
-        </div>
-      </div>
-
-    </div>
+  <!-- ================= 1. CỬA SỔ ĐĂNG NHẬP CHUYÊN NGHIỆP (LOGIN OVERLAY) ================= -->
+  <div id="loginOverlay" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center z-[100] p-4 transition-all duration-300">
     
-    <!-- KHỐI LƯU Ý KHÓA CỔNG TỰ ĐỘNG -->
-    <div class="bg-amber-50/90 border-l-4 border-amber-500 p-3.5 rounded-r-xl text-xs space-y-1.5">
-      <div class="font-bold text-amber-900 flex items-center gap-1.5 text-sm">
-        <span>⚠️</span> LƯU Ý QUAN TRỌNG VỀ NHẬP HỌC TRỰC TUYẾN:
+    <div class="bg-white/90 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative">
+      
+      <!-- Trang trí Header -->
+      <div class="bg-gradient-to-r from-sky-700 via-blue-800 to-indigo-900 p-8 text-center text-white relative">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-3 backdrop-blur-sm border border-white/20 shadow-inner">
+          <i class="fa-solid fa-graduation-cap text-amber-300"></i>
+        </div>
+        <h3 class="text-xl font-extrabold tracking-wide uppercase">CỔNG QUẢN TRỊ GIÁO DỤC</h3>
+        <p class="text-xs text-sky-200 mt-1 font-light">Đăng nhập tài khoản cán bộ / giáo viên</p>
       </div>
-      <ul class="list-disc list-inside text-amber-950 space-y-1 leading-relaxed pl-1">
-        <li>Hướng dẫn nhập học trực tuyến sẽ được đăng kèm cùng danh sách trúng tuyển từng đợt.</li>
-        <li>Học sinh trúng tuyển bắt buộc phải thực hiện <strong class="text-red-700 underline">XÁC NHẬN NHẬP HỌC TRỰC TUYẾN</strong> đúng thời hạn quy định.</li>
-        <li><strong>Sau thời gian trên:</strong> Hệ thống sẽ <strong class="text-red-700">TỰ ĐỘNG KHÓA</strong> và chuyển chỉ tiêu cho đợt xét tuyển tiếp theo.</li>
-      </ul>
-    </div>
 
-    <!-- THÔNG BÁO KÊNH THÔNG TIN CHÍNH THỨC -->
-    <div class="text-center bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600">
-      💡 Mọi thông tin chi tiết và danh sách trúng tuyển từng đợt sẽ được cập nhật liên tục trên <strong>Fanpage chính thức</strong> và <strong>Website của Nhà trường</strong>.
-    </div>
+      <!-- Form nhập liệu -->
+      <form id="formLogin" onsubmit="event.preventDefault(); doLogin();" class="p-6 md:p-8 space-y-5">
+        
+        <!-- Ô nhập Tài khoản -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+            Mã Tài Khoản <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <i class="fa-solid fa-user-gear"></i>
+            </span>
+            <input type="text" id="accInput" required placeholder="MãTrường.MãNS (VD: C3NDT.GV001)"
+                   class="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white font-mono font-semibold transition">
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">Định dạng: <span class="font-mono font-bold text-sky-700">MãTrường.MãNhânSự</span></p>
+        </div>
 
-    <div class="text-center">
-      <a href="./admin.html" class="text-xs text-slate-400 hover:text-slate-600 font-medium transition">🔐 Trang Quản Trị Tuyển Sinh</a>
-    </div>
+        <!-- Ô nhập Mật khẩu -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+            Mật Khẩu <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input type="password" id="passInput" required placeholder="••••••••"
+                   class="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white transition">
+          </div>
+        </div>
 
-  </main>
+        <!-- Thông báo lỗi/thành công -->
+        <div id="loginMsg" class="hidden p-3 rounded-xl text-xs font-semibold leading-relaxed"></div>
 
-  <!-- Thông tin liên hệ nhà trường -->
-  <div class="bg-slate-50 border-t border-slate-200 p-5 text-center text-xs text-slate-600 space-y-1">
-    <p class="font-bold text-blue-950 text-sm uppercase">Trường THPT Nguyễn Duy Trinh</p>
-    <p class="text-slate-500">📍 Xóm Quán Hành 4, Xã Nghi Lộc, Nghệ An</p>
-    <div class="pt-1 flex flex-wrap justify-center gap-3 text-slate-600">
-      <p>📞 Điện thoại liên hệ: <a href="tel:0978929399" class="font-bold text-blue-700 hover:underline">0978 92 93 99</a> - <a href="tel:0915779656" class="font-bold text-blue-700 hover:underline">0915 779 656</a></p>
-      <p>✉️ Email: <a href="mailto:vanbanndt@nghean.edu.vn" class="font-medium text-slate-700">vanbanndt@nghean.edu.vn</a></p>
+        <!-- Nút Đăng nhập -->
+        <button type="submit" id="btnLogin"
+                class="w-full bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-xl text-sm transition shadow-lg shadow-sky-600/30 flex items-center justify-center gap-2">
+          <span>ĐĂNG NHẬP HỆ THỐNG</span>
+        </button>
+
+      </form>
+
+      <!-- Footer Modal -->
+      <div class="bg-slate-50 px-6 py-3 border-t border-slate-200/60 text-center text-[11px] text-slate-400">
+        Hệ thống Quản lý Dữ liệu Giáo dục Trực tuyến © 2026
+      </div>
+
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50 space-y-1">
-    <p>© Bản quyền thuộc về <span class="info-hieu-truong">Lê Duy Hải</span> - <span class="info-ten-truong">0978 92 93 99</span></p>
-  </footer>
 
-  <script>
-    // DÁN LINK GOOGLE APPS SCRIPT WEB APP CỦA BẠN VÀO ĐÂY:
-    const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
-
+  <!-- ================= 2. BÀN LÀM VIỆC (DESKTOP UI) ================= -->
+  <div class="p-6 grid grid-flow-col grid-rows-5 auto-cols-max gap-x-8 gap-y-6 max-h-[calc(100vh-48px)] overflow-x-auto overflow-y-hidden">
     
-    // Link trang hiện tại để tạo mã QR
-    const QR_TRA_CUU_URL = window.location.href;
+    <div onclick="openDbLink()" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-database"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        CSDL Trường
+      </span>
+    </div>
 
-    document.addEventListener("DOMContentLoaded", function() {
-      initQRCode();
-    });
+    <div onclick="alert('Phân hệ Quản lý Học sinh')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Quản lý học sinh
+      </span>
+    </div>
 
-    function initQRCode() {
-      const qrContainer = document.getElementById("indexQrcode");
-      if (qrContainer) {
-        new QRCode(qrContainer, {
-          text: QR_TRA_CUU_URL,
-          width: 150,
-          height: 150,
-          colorDark : "#0f172a",
-          colorLight : "#ffffff",
-          correctLevel : QRCode.CorrectLevel.H
-        });
-      }
-    }
+  </div>
 
-    function downloadIndexQR() {
-      setTimeout(function() {
-        const img = document.querySelector("#indexQrcode img");
-        if (img && img.src) {
-          const a = document.createElement("a");
-          a.href = img.src;
-          a.download = "Ma_QR_Tra_Cuu_THPT_Nguyen_Duy_Trinh.png";
-          a.click();
-        } else {
-          alert("Mã QR đang được khởi tạo, vui lòng bấm lại!");
-        }
-      }, 200);
-    }
 
-    function formatDateVN(dateStr) {
-      if (!dateStr) return "";
-      var str = String(dateStr).trim();
-      if (str.includes("T")) str = str.split("T")[0];
-      if (str.includes("-")) {
-        var parts = str.split("-");
-        if (parts.length === 3 && parts[0].length === 4) {
-          return parts[2] + "/" + parts[1] + "/" + parts[0];
-        }
-      }
-      return str;
-    }
+  <!-- ================= 3. START MENU (MENU CỬA SỔ) ================= -->
+  <div id="startMenu" class="hidden absolute bottom-12 left-2 w-96 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+    
+    <!-- Header hiển thị đúng User & Trường sau khi Login -->
+    <div class="bg-sky-700 p-4 text-white flex items-center gap-3">
+      <div class="w-12 h-12 bg-white text-sky-700 rounded-full flex items-center justify-center font-bold text-xl shadow">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+      <div class="overflow-hidden">
+        <h4 id="userFullName" class="font-bold text-sm truncate">Chưa đăng nhập</h4>
+        <p id="userSchoolName" class="text-xs text-sky-200 truncate">Vui lòng đăng nhập...</p>
+        <div class="flex gap-2 mt-1">
+          <span id="userRole" class="text-[10px] bg-sky-900/60 text-sky-100 px-2 py-0.5 rounded-md font-mono">---</span>
+          <span id="userPosition" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded-md font-semibold">---</span>
+        </div>
+      </div>
+    </div>
 
-    // Hàm tra cứu gọi trực tiếp qua API
-    function handleSearch() {
-      const kw = document.getElementById('searchInput').value.trim();
-      const btn = document.getElementById('btnSearch');
-      const btnText = document.getElementById('btnSearchText');
-      const resultsDiv = document.getElementById('searchResults');
-      const msgDiv = document.getElementById('searchMessage');
-      const tbody = document.getElementById('tableBody');
+    <div class="p-2 bg-slate-50 border-t border-slate-200">
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-lg transition font-semibold text-xs">
+        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất hệ thống
+      </button>
+    </div>
+  </div>
 
-      if (!kw) { alert('Vui lòng nhập SBD hoặc Họ tên!'); return; }
+
+  <!-- ================= 4. TASKBAR PHÍA DƯỚI ================= -->
+  <div class="absolute bottom-0 left-0 w-full h-11 bg-slate-900/80 backdrop-blur-md border-t border-slate-700/50 flex items-center justify-between px-3 z-50">
+    <button onclick="toggleStartMenu()" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
+      <i class="fa-solid fa-border-all text-sm"></i>
+      <span id="taskbarUser">Hệ thống</span>
+    </button>
+
+    <div id="clock" class="text-white text-xs font-medium tracking-wide bg-slate-800/60 px-3 py-1 rounded-md border border-slate-700">
+      00:00:00
+    </div>
+  </div>
+
+
+  <!-- ================= 5. SCRIPT XỬ LÝ ĐĂNG NHẬP ================= -->
+  <script>
+    let currentSession = null; // Lưu Session sau khi Login thành công
+
+    function doLogin() {
+      const acc = document.getElementById('accInput').value.trim();
+      const pass = document.getElementById('passInput').value.trim();
+      const btn = document.getElementById('btnLogin');
+      const msg = document.getElementById('loginMsg');
 
       btn.disabled = true;
-      btnText.innerHTML = '<span class="loader"></span> Đang tìm...';
+      btn.innerHTML = '<span class="loader"></span> Đang xác thực thông tin...';
+      msg.classList.add('hidden');
 
-      // Gọi Fetch API kết nối Google Sheets
-      fetch(`${API_URL}?action=traCuu&sbd=${encodeURIComponent(kw)}`)
-        .then(response => response.json())
-        .then(res => {
+      // Gọi hàm Google Apps Script
+      google.script.run
+        .withSuccessHandler(function(res) {
           btn.disabled = false;
-          btnText.innerText = 'TRA CỨU';
-          resultsDiv.classList.remove('hidden');
+          btn.innerHTML = '<span>ĐĂNG NHẬP HỆ THỐNG</span>';
 
-          if (res.status === "success" && res.data) {
-            let item = res.data;
-            msgDiv.innerText = `Tìm thấy kết quả:`;
-            var ngaySinhFormatted = formatDateVN(item.NgaySinh || item.ngaySinh);
+          if (res.status === 'success') {
+            currentSession = res;
             
-            let html = `<tr class="hover:bg-slate-50 transition">
-              <td class="p-2.5 font-mono font-bold text-blue-900">${item.SBD || item.sbd}</td>
-              <td class="p-2.5 font-bold uppercase text-slate-800">${item.HoTen || item.hoTen}</td>
-              <td class="p-2.5 text-slate-600 font-medium">${ngaySinhFormatted}</td>
-              <td class="p-2.5 text-center font-bold text-amber-700">${item.DiemXetTuyen || item.tongDiem || ''}</td>
-              <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-bold text-[10px]">${item.TrangThai || item.trangThai || 'Đã trúng tuyển'}</span></td>
-            </tr>`;
-            
-            tbody.innerHTML = html;
+            // Cập nhật giao diện Desktop với thông tin lấy từ Sheet
+            document.getElementById('userFullName').innerText = res.user.fullName + " (" + res.user.maNhanSu + ")";
+            document.getElementById('userSchoolName').innerText = res.school.tenTruong;
+            document.getElementById('userRole').innerText = res.user.vaiTro;
+            document.getElementById('userPosition').innerText = res.user.chucVu;
+            document.getElementById('taskbarUser').innerText = res.user.fullName;
+
+            // Ẩn Cửa sổ Đăng nhập
+            document.getElementById('loginOverlay').classList.add('hidden');
           } else {
-            msgDiv.innerText = 'Không tìm thấy dữ liệu phù hợp!';
-            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Không có kết quả phù hợp với từ khóa "${kw}"</td></tr>`;
+            msg.className = "p-3 rounded-xl text-xs font-semibold leading-relaxed bg-rose-100 text-rose-700 border border-rose-200";
+            msg.innerText = "❌ " + res.message;
+            msg.classList.remove('hidden');
           }
         })
-        .catch(err => {
+        .withFailureHandler(function(err) {
           btn.disabled = false;
-          btnText.innerText = 'TRA CỨU';
-          alert('Lỗi tra cứu: ' + err.message);
-        });
+          btn.innerHTML = '<span>ĐĂNG NHẬP HỆ THỐNG</span>';
+          msg.className = "p-3 rounded-xl text-xs font-semibold leading-relaxed bg-amber-100 text-amber-800 border border-amber-200";
+          msg.innerText = "⚠️ Lỗi kết nối Máy chủ: " + err.message;
+          msg.classList.remove('hidden');
+        })
+        .handleLogin({ account: acc, password: pass });
     }
+
+    // Mở file CSDL Trường của cán bộ đó
+    function openDbLink() {
+      if (currentSession && currentSession.school && currentSession.school.dbUrl) {
+        window.open(currentSession.school.dbUrl, '_blank');
+      } else {
+        alert("Không tìm thấy đường dẫn CSDL!");
+      }
+    }
+
+    // Đăng xuất
+    function logout() {
+      currentSession = null;
+      document.getElementById('loginOverlay').classList.remove('hidden');
+      document.getElementById('formLogin').reset();
+      document.getElementById('loginMsg').classList.add('hidden');
+      toggleStartMenu();
+    }
+
+    function toggleStartMenu() {
+      document.getElementById('startMenu').classList.toggle('hidden');
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = now.toLocaleTimeString('vi-VN');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
   </script>
 </body>
 </html>
